@@ -17,7 +17,7 @@ public:
 	Edge(Noeud*, Noeud*, double);
 	double getValue();
 	vector<Noeud*> getLinks();
-
+	bool close;
 private:
 	double value;
 	vector<Noeud*> links;

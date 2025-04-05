@@ -18,6 +18,28 @@ void Graphe::addNoeud(Noeud* newN){
     }
 }
 
+vector<int> Graphe::DistAleatoires(int k, int n, int seed) {
+    if (k >= n) {
+        throw invalid_argument("k doit etre strictement inférieur a n");
+    }
+    vector<int> valeurs;
+    valeurs.reserve(n);
+    for (int i = 0; i < n; i++) {
+        valeurs.push_back(i);
+    }
+    mt19937 g(seed);
+    shuffle(valeurs.begin(), valeurs.end(), g);
+    valeurs.resize(k);
+    return valeurs;
+}
+
+
+void Graphe::closeRoad(int k, int seed){
+    for(int e : DistAleatoires(k, noeuds.size(), seed)){
+        edges[e]->close = true;
+    }
+}
+
 void Graphe::addEdge(Noeud* n1, Noeud* n2, double value){
     Edge* e = new Edge(n1, n2, value);
     edges.push_back(e);
@@ -53,6 +75,8 @@ void Graphe::display(string path = "output.png"){
 
             string value_str = to_string(e->getValue());
             agsafeset(edge, (char*)"label", (char*)value_str.c_str(), (char*)"");
+            if(e->close)
+                agsafeset(edge, (char*)"color", (char*)"red", (char*)"");
         }
     }
     

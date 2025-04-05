@@ -16,4 +16,5 @@ class Graphe;
 class Noeud;
 vector<pair<double, double>> points;
 Graphe initCTP(int nbNoeud, int min, int max, int seed = 0);
+Graphe initKCCTP(int nbNoeud, int k, int min, int max, int seed);
 #endif 

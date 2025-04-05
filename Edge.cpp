@@ -2,6 +2,7 @@
 
 Edge::Edge(Noeud* n1, Noeud* n2, double value){
     this->value = value;
+    this->close = false;
     links.push_back(n1);
     links.push_back(n2);
 }
