@@ -24,11 +24,12 @@ public:
 	void display(string path);
 	void addEdge(Noeud*, Noeud*, double value);
 	Noeud* getNoeud(int nb);
+	Edge* getEdge(int n1, int n2);
 	void closeRoad(int k, int seed);
 	vector<int> DistAleatoires(int k, int n, int seed);
-private:
 	vector<Noeud*> noeuds;
 	vector<Edge*> edges;
+
 };
 
 #endif 
