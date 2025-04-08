@@ -1,5 +1,7 @@
 #include "RandomkCCTP.hpp"
 
+vector<pair<double, double> > points;
+
 Graphe initCTP(int nbNoeud, int min, int max, int seed){
 	mt19937 generator(seed); 
 	Noeud* n = nullptr;

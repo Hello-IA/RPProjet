@@ -7,7 +7,7 @@
 #include<vector>
 #include <random>
 #include <algorithm>
-#include <String>
+#include <string>
 #include "Edge.hpp"
 #include "Noeud.hpp"
 using namespace std;
