@@ -1,0 +1,9 @@
+# Executables
+*.o
+graphapp*
+
+# VS Code files
+.vscode/*
+
+#Output Files
+*.png

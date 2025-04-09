@@ -1,0 +1,113 @@
+#ifndef NJAKSDTHASKJERAXJGFBZJDLAGZ
+#define NJAKSDTHASKJERAXJGFBZJDLAGZ
+
+// At most one of the flags
+//    PM_TIMER_MSVC
+//    PM_TIMER_CLOCK_GETTIME
+//    PM_TIMER_GETRUSAGE
+//    PM_TIMER_EXTERNAL
+//    PM_TIMER_NONE
+// can be defined externally. If PM_TIMER_EXTERNAL is defined,
+// then there must exist a definition of function "double get_time()" elsewhere.
+
+#if defined (PM_TIMER_MSVC) || defined (PM_TIMER_CLOCK_GETTIME) || defined (PM_TIMER_GETRUSAGE) || defined (PM_TIMER_EXTERNAL) || defined (PM_TIMER_NONE)
+#else
+	// default option
+	#ifdef _MSC_VER
+		#define PM_TIMER_MSVC
+	#elif defined(__APPLE_CC__)
+		#define PM_TIMER_GETRUSAGE
+	#else
+		#define PM_TIMER_CLOCK_GETTIME
+	#endif
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef PM_TIMER_MSVC
+
+	#include <windows.h>
+
+	inline double get_time()
+	{
+		LARGE_INTEGER t, frequency;
+		QueryPerformanceCounter(&t);
+		QueryPerformanceFrequency(&frequency);
+		return (double)t.QuadPart/(double)frequency.QuadPart;
+	}
+
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef _WIN32
+    #include <windows.h>
+#endif
+
+#ifdef PM_TIMER_CLOCK_GETTIME
+
+	#include <time.h>
+
+	inline double get_time()
+	{
+		// Par une version compatible avec tous les systèmes:
+		#ifdef _WIN32
+		    // Version Windows
+		    LARGE_INTEGER frequency;
+		    LARGE_INTEGER t1;
+		    QueryPerformanceFrequency(&frequency);
+		    QueryPerformanceCounter(&t1);
+		    return (double)t1.QuadPart / (double)frequency.QuadPart;
+		#else
+		    // Version Linux/Unix
+		    struct timespec t;
+		    clock_gettime(CLOCK_REALTIME, &t);  // Utiliser CLOCK_REALTIME à la place
+		    return (double)t.tv_sec + 1.0e-9 * t.tv_nsec;
+		#endif
+	}
+
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef PM_TIMER_GETRUSAGE
+
+	#include <sys/resource.h>
+
+	inline double get_time()
+	{
+		struct rusage t;
+		getrusage (RUSAGE_SELF, &t);
+		return (double)t.ru_utime.tv_usec*1.00E-6 + (double)t.ru_utime.tv_sec;
+	}
+
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef PM_TIMER_EXTERNAL
+
+	extern double get_time();
+
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef PM_TIMER_NONE
+
+	inline double get_time() { return 0; }
+
+#endif
+
+#endif
+
