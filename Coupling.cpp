@@ -1,5 +1,87 @@
 #include "Coupling.hpp"
 
+
+void graph_to_file(Graphe* g, string filename, unordered_map<int, int>* map_ids, unordered_map<int, int>* reverse_map_ids) {
+    int nb_nodes = g->noeuds.size();
+    int nb_edges = g->edges.size();
+    ofstream f;
+    f.open(filename, ios::trunc);
+
+    if (!f.is_open()) {
+        cerr << "Erreur lors de l'ouverture du fichier " << filename << endl;
+        return;
+    }
+
+    f << nb_nodes << " " << nb_edges << endl;
+    int idcount = 0;
+    for (Edge* e : g->edges) {
+        vector<Noeud*> links = e->getLinks();
+        auto result = map_ids->insert({links[0]->getName(), idcount});
+        if (result.second) {
+            reverse_map_ids->insert({idcount, links[0]->getName()});
+            idcount++;
+        }
+        result = map_ids->insert({links[1]->getName(), idcount});
+        if (result.second) {
+            reverse_map_ids->insert({idcount, links[1]->getName()});
+            idcount++;
+        }
+
+        f << map_ids->at(links[0]->getName()) << " " << map_ids->at(links[1]->getName()) << " " << int(round(e->getValue())) /*blossom5 doesn't accept float*/ << endl;
+    }
+    f.close();
+}
+
+vector<Edge*> file_to_coupling(Graphe* g, string filename, unordered_map<int, int>* reverse_map_ids) {
+    vector<Edge*> result;
+    ifstream f;
+    f.open(filename);
+    if (!f.is_open()) {
+        cerr << "Erreur lors de la lecture du fichier " << filename << endl;
+        exit(1);
+    }
+
+    string line;
+    bool first_line = true;
+    while(getline(f, line)) {
+        if (line.empty() || line[0] == '#') continue;
+        if (first_line) {
+            first_line = false;
+            continue;
+        }
+        istringstream iss(line);
+        int u, v;
+        iss >> u >> v;
+
+        result.push_back(g->getEdge(reverse_map_ids->at(u), reverse_map_ids->at(v)));
+    }
+
+    f.close();
+    return result;
+}
+
+vector<Edge*> coupling_perfect(Graphe* g) {
+    vector<Edge*> result = vector<Edge*>();
+    string inputfile = "graph.txt";
+    string outputfile = "coupling.txt";
+
+    unordered_map<int, int> map_ids;
+    unordered_map<int, int> reverse_map_ids;
+
+    graph_to_file(g, inputfile, &map_ids, &reverse_map_ids);
+    
+    string cmd = "./blossom5/blossom5 -V -e " + inputfile + " -w " + outputfile;
+    int status = system(cmd.c_str());
+    if (status != 0) {
+        cerr << "Erreur lors de l'execution de blossom5." << endl;
+        exit(1);
+    }
+
+    return file_to_coupling(g, outputfile, &reverse_map_ids);
+}
+
+
+/*
 #define M 500
 
 struct StructEdge {
@@ -144,7 +226,7 @@ void runEdmonds(Graphe* g) {
         cout << "Matched: " << u << " <-> " << v << endl;
     }
 }
-
+*/
 vector<Edge*> coupling_glutton(Graphe* g) {
     vector<Edge*> c;
     unordered_set<Noeud*> traites;
