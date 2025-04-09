@@ -1,5 +1,5 @@
 @echo off
-echo ===== Script de compilation =====
+echo ===== Script de compilation récursive =====
 
 set CXX=g++
 set CXXFLAGS=-Wall -Wextra -std=c++11
@@ -10,10 +10,12 @@ set LDFLAGS=-Wl,--allow-multiple-definition
 set TARGET=graphapp.exe
 
 echo.
-echo Compilation des fichiers source...
-for %%F in (*.cpp) do (
+echo Compilation des fichiers source dans tous les répertoires...
+
+:: Liste tous les fichiers .cpp dans le répertoire actuel et tous les sous-répertoires
+for /r %%F in (*.cpp) do (
     echo Compilation de %%F
-    %CXX% -c %CXXFLAGS% -I%GRAPHVIZ_INCLUDE% "%%F"
+    %CXX% -c %CXXFLAGS% -I%GRAPHVIZ_INCLUDE% -I. "%%F"
     if errorlevel 1 (
         echo Erreur lors de la compilation de %%F
         exit /b 1

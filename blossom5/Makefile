@@ -17,7 +17,11 @@ endif
 all: blossom5
 
 blossom5: ${OBJS}
+ifeq ($(OS),Windows_NT)
+	$(CXX) $(CFLAGS) ${LIBDIR} -o $@ ${OBJS}
+else
 	$(CXX) $(CFLAGS) ${LIBDIR} -o $@ ${OBJS} ${LIBS}
+endif
 
 .cpp.o:
 	$(CXX) $(CFLAGS) ${INCLUDES} $< -c -o $@

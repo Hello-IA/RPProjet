@@ -1,16 +1,13 @@
 #include "Coupling.hpp"
 
 
-void graph_to_file(Graphe* g, string filename, unordered_map<int, int>* map_ids, unordered_map<int, int>* reverse_map_ids) {
+string graph_to_file(Graphe* g, unordered_map<int, int>* map_ids, unordered_map<int, int>* reverse_map_ids) {
     int nb_nodes = g->noeuds.size();
     int nb_edges = g->edges.size();
-    ofstream f;
-    f.open(filename, ios::trunc);
+    stringstream f;
 
-    if (!f.is_open()) {
-        cerr << "Erreur lors de l'ouverture du fichier " << filename << endl;
-        return;
-    }
+
+
 
     f << nb_nodes << " " << nb_edges << endl;
     int idcount = 0;
@@ -29,21 +26,17 @@ void graph_to_file(Graphe* g, string filename, unordered_map<int, int>* map_ids,
 
         f << map_ids->at(links[0]->getName()) << " " << map_ids->at(links[1]->getName()) << " " << int(round(e->getValue())) /*blossom5 doesn't accept float*/ << endl;
     }
-    f.close();
+    return f.str();
 }
 
-vector<Edge*> file_to_coupling(Graphe* g, string filename, unordered_map<int, int>* reverse_map_ids) {
+vector<Edge*> file_to_coupling(Graphe* g, string graphStr, unordered_map<int, int>* reverse_map_ids) {
     vector<Edge*> result;
-    ifstream f;
-    f.open(filename);
-    if (!f.is_open()) {
-        cerr << "Erreur lors de la lecture du fichier " << filename << endl;
-        exit(1);
-    }
+    stringstream ss(graphStr);
+
 
     string line;
     bool first_line = true;
-    while(getline(f, line)) {
+    while(getline(ss, line)) {
         if (line.empty() || line[0] == '#') continue;
         if (first_line) {
             first_line = false;
@@ -56,29 +49,23 @@ vector<Edge*> file_to_coupling(Graphe* g, string filename, unordered_map<int, in
         result.push_back(g->getEdge(reverse_map_ids->at(u), reverse_map_ids->at(v)));
     }
 
-    f.close();
     return result;
 }
 
 vector<Edge*> coupling_perfect(Graphe* g) {
     vector<Edge*> result = vector<Edge*>();
-    string inputfile = "graph.txt";
-    string outputfile = "coupling.txt";
 
     unordered_map<int, int> map_ids;
     unordered_map<int, int> reverse_map_ids;
 
-    graph_to_file(g, inputfile, &map_ids, &reverse_map_ids);
-    
-    string cmd = "./blossom5/blossom5 -V -e " + inputfile + " -w " + outputfile;
-    int status = system(cmd.c_str());
-    if (status != 0) {
-        cerr << "Erreur lors de l'execution de blossom5." << endl;
-        exit(1);
-    }
+    string data = graph_to_file(g, &map_ids, &reverse_map_ids);
+    //cout << data << endl;
+    string output = coupling(data);
 
-    return file_to_coupling(g, outputfile, &reverse_map_ids);
+    return file_to_coupling(g, output, &reverse_map_ids);
 }
+
+
 
 
 /*

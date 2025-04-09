@@ -44,15 +44,30 @@
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef _WIN32
+    #include <windows.h>
+#endif
+
 #ifdef PM_TIMER_CLOCK_GETTIME
 
 	#include <time.h>
 
 	inline double get_time()
 	{
-		struct timespec t;
-		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t);
-		return (double)t.tv_nsec*1.00E-9 + (double)t.tv_sec;
+		// Par une version compatible avec tous les systèmes:
+		#ifdef _WIN32
+		    // Version Windows
+		    LARGE_INTEGER frequency;
+		    LARGE_INTEGER t1;
+		    QueryPerformanceFrequency(&frequency);
+		    QueryPerformanceCounter(&t1);
+		    return (double)t1.QuadPart / (double)frequency.QuadPart;
+		#else
+		    // Version Linux/Unix
+		    struct timespec t;
+		    clock_gettime(CLOCK_REALTIME, &t);  // Utiliser CLOCK_REALTIME à la place
+		    return (double)t.tv_sec + 1.0e-9 * t.tv_nsec;
+		#endif
 	}
 
 #endif
