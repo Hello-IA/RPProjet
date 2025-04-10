@@ -5,6 +5,7 @@
 #include "Prim.hpp"
 #include "DegreeGrapheImpair.hpp"
 #include "Coupling.hpp"
+#include "Utile.hpp"
 #include <iostream>
 
 int main() {
@@ -15,12 +16,14 @@ int main() {
     //vector<Edge*> c = coupling_glutton(&i);
     //cout << "coupling glouton ok" << endl;
     vector<Edge*> c_opt = coupling_perfect(&i);
+
+    Graphe u = unionGraphes(t, c_opt);
     //cout << "coupling opt ok" << endl;
     //runEdmonds(&i);
     g.display("output.png");
     t.display("tree.png");
     i.display("grapheImpair.png");
-    
+    u.display("union.png");
     float value = 0;
     for (Edge* e: c_opt) {
         value += e->getValue();
