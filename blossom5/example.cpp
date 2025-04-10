@@ -124,7 +124,6 @@ string coupling(string data)
 		printf("check optimality: res=%d (%s)\n", res, (res==0) ? "ok" : ((res==1) ? "error" : "fatal error"));
 	}
 	double cost = ComputePerfectMatchingCost(node_num, edge_num, edges, weights, pm);
-	printf("cost = %.1f\n", cost);
 	string outpout = SaveMatching(node_num, pm);
 	delete pm;
 

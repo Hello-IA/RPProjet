@@ -48,8 +48,11 @@ void Graphe::addEdge(Noeud* n1, Noeud* n2, double value){
 }
 
 void Graphe::display(string path = "output.png"){
-     GVC_t* gvc = gvContext();
+    GVC_t* gvc = gvContext();
     Agraph_t* g = agopen((char*)"g", Agundirected, 0);
+
+    agattr(g, AGRAPH, (char*)"overlap", (char*)"false");
+    agattr(g, AGRAPH, (char*)"splines", (char*)"true");
 
     vector<Agnode_t*> graphviz_nodes;
     
@@ -60,6 +63,7 @@ void Graphe::display(string path = "output.png"){
         graphviz_nodes.push_back(node);
     }
     
+    int edge_counter = 0;
 
     for(Edge* e : edges) {
         vector<Noeud*> links = e->getLinks();
@@ -71,7 +75,9 @@ void Graphe::display(string path = "output.png"){
         }
         
         if(idx1 >= 0 && idx2 >= 0) {
-            Agedge_t* edge = agedge(g, graphviz_nodes[idx1], graphviz_nodes[idx2], (char*)"", 1);
+            string edge_id = "edge_" + to_string(edge_counter++);
+            
+            Agedge_t* edge = agedge(g, graphviz_nodes[idx1], graphviz_nodes[idx2], (char*)edge_id.c_str(), 1);
 
             string value_str = to_string(e->getValue());
             agsafeset(edge, (char*)"label", (char*)value_str.c_str(), (char*)"");
@@ -80,11 +86,12 @@ void Graphe::display(string path = "output.png"){
         }
     }
     
-    gvLayout(gvc, g, "dot");
+    gvLayout(gvc, g, "neato");
     gvRenderFilename(gvc, g, "png", path.c_str());
     
     gvFreeLayout(gvc, g);
     agclose(g);
+    gvFreeContext(gvc); 
 }
 
 Noeud* Graphe::getNoeud(int nb){
