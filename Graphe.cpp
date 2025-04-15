@@ -18,13 +18,13 @@ void Graphe::addNoeud(Noeud* newN){
     }
 }
 
-vector<int> Graphe::DistAleatoires(int k, int n, int seed) {
+vector<int> Graphe::DistAleatoires(int k, int nb_edge, int n, int seed) {
     if (k >= n) {
         throw invalid_argument("k doit etre strictement inférieur a n");
     }
     vector<int> valeurs;
-    valeurs.reserve(n);
-    for (int i = 0; i < n; i++) {
+    valeurs.reserve(nb_edge);
+    for (int i = 0; i < nb_edge; i++) {
         valeurs.push_back(i);
     }
     mt19937 g(seed);
@@ -34,8 +34,8 @@ vector<int> Graphe::DistAleatoires(int k, int n, int seed) {
 }
 
 
-void Graphe::closeRoad(int k, int seed){
-    for(int e : DistAleatoires(k, noeuds.size(), seed)){
+void Graphe::closeRoad(int k,int nb_edge, int seed){
+    for(int e : DistAleatoires(k, nb_edge, noeuds.size(), seed)){
         edges[e]->close = true;
     }
 }

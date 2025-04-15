@@ -29,6 +29,6 @@ Graphe initCTP(int nbNoeud, int min, int max, int seed){
 
 Graphe initKCCTP(int nbNoeud, int k, int min, int max, int seed){
 	Graphe g =  initCTP(nbNoeud, min, max, seed);
-	g.closeRoad(k, seed);
+	g.closeRoad(k, g.edges.size(), seed);
 	return g;
 }
