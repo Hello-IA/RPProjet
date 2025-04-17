@@ -459,8 +459,7 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
         } else {
             // Arête non disponible, chercher un raccourci
             int lookAhead = current;
-            bool shortcutFound = false;
-            
+
             // Limiter la recherche à la longueur du cycle pour éviter des boucles infinies
             for (size_t i = 0; i < Cyclic.size(); i++) {
                 lookAhead = nextPosition(lookAhead, currentSens);
@@ -472,62 +471,11 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
                     // Raccourci trouvé, ajouter et mettre à jour la position courante
                     finalPath.push_back(potentialNode);
                     current = lookAhead;
-                    shortcutFound = true;
                     break;
                 }
                 
                 // Si on a dépassé le nœud de destination, arrêter
                 if (lookAhead == firstPos) break;
-            }
-            
-            // Si aucun raccourci n'est trouvé, essayer avec des sauts plus grands
-            if (!shortcutFound) {
-                // Essayer avec des sauts de taille croissante dans le même sens
-                for (int step = 2; step <= Cyclic.size() / 2; step++) {
-                    lookAhead = current;
-                    for (int i = 0; i < step; i++) {
-                        lookAhead = nextPosition(lookAhead, currentSens);
-                    }
-                    
-                    Edge* longJump = g.getEdge(finalPath.back(), Cyclic[lookAhead]);
-                    if (longJump && !longJump->close) {
-                        finalPath.push_back(Cyclic[lookAhead]);
-                        current = lookAhead;
-                        shortcutFound = true;
-                        break;
-                    }
-                }
-                
-                // Si toujours pas de raccourci, inverser le sens temporairement
-                if (!shortcutFound) {
-                    cout << "Aucun raccourci trouvé dans le sens initial, tentative dans le sens opposé" << endl;
-                    
-                    // Essayer quelques sauts dans le sens opposé
-                    bool oppositeSens = !currentSens;
-                    lookAhead = lastPos;
-                    
-                    for (int step = 1; step <= Cyclic.size() / 2; step++) {
-                        for (int i = 0; i < step; i++) {
-                            lookAhead = nextPosition(lookAhead, oppositeSens);
-                        }
-                        
-                        Edge* oppositeJump = g.getEdge(lastNode, Cyclic[lookAhead]);
-                        if (oppositeJump && !oppositeJump->close) {
-                            // Reconstruire le chemin en partant du sens opposé
-                            finalPath.clear();
-                            finalPath.push_back(lastNode);
-                            finalPath.push_back(Cyclic[lookAhead]);
-                            current = lookAhead;
-                            currentSens = oppositeSens; // Changer définitivement le sens
-                            shortcutFound = true;
-                            break;
-                        }
-                    }
-                }
-                
-                if (!shortcutFound) {
-                    pathValid = false;
-                }
             }
         }
     }
@@ -543,60 +491,6 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
         }
     }
     
-    // Si aucun chemin n'est trouvé, essayer des méthodes alternatives
-    if (!pathValid || finalPath.empty() || finalPath.back() != firstNode) {
-        cout << "La méthode principale n'a pas trouvé de chemin, tentative avec des approches alternatives" << endl;
-        
-        // Méthode alternative: recherche dans les deux sens simultanément
-        vector<int> pathForward, pathBackward;
-        pathForward.push_back(lastNode);
-        pathBackward.push_back(lastNode);
-        
-        int posForward = lastPos;
-        int posBackward = lastPos;
-        bool validForward = true, validBackward = true;
-        
-        while ((validForward || validBackward) && 
-               (pathForward.empty() || pathForward.back() != firstNode) &&
-               (pathBackward.empty() || pathBackward.back() != firstNode)) {
-            
-            // Essai en avant (sens actuel)
-            if (validForward && posForward != firstPos) {
-                posForward = nextPosition(posForward, currentSens);
-                Edge* e = g.getEdge(pathForward.back(), Cyclic[posForward]);
-                
-                if (e && !e->close) {
-                    pathForward.push_back(Cyclic[posForward]);
-                    if (Cyclic[posForward] == firstNode) break;
-                } else {
-                    validForward = false;
-                }
-            }
-            
-            // Essai en arrière (sens opposé)
-            if (validBackward && posBackward != firstPos) {
-                posBackward = nextPosition(posBackward, !currentSens);
-                Edge* e = g.getEdge(pathBackward.back(), Cyclic[posBackward]);
-                
-                if (e && !e->close) {
-                    pathBackward.push_back(Cyclic[posBackward]);
-                    if (Cyclic[posBackward] == firstNode) break;
-                } else {
-                    validBackward = false;
-                }
-            }
-        }
-        
-        // Choisir le meilleur chemin trouvé
-        if (validForward && pathForward.back() == firstNode) {
-            finalPath = pathForward;
-        } else if (validBackward && pathBackward.back() == firstNode) {
-            finalPath = pathBackward;
-        } else {
-            // Aucun chemin trouvé
-            finalPath.clear();
-        }
-    }
     
     // Afficher le raccourci trouvé
     if (!finalPath.empty() && finalPath.back() == firstNode) {
@@ -611,8 +505,9 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
     }
     
     return finalPath;
-}
 
+
+}
 
 int trouverIndice(const vector<int>& liste, int valeur) {
     auto it = find(liste.begin(), liste.end(), valeur);
