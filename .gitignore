@@ -5,5 +5,5 @@ graphapp*
 # VS Code files
 .vscode/*
 
-#Output Files
+# Output Files
 *.png
