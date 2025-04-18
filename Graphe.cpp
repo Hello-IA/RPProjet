@@ -94,6 +94,9 @@ void Graphe::display(string path = "output.png"){
     gvFreeContext(gvc); 
 }
 
+void Graphe::closeParticularRoad(int e) {
+    edges[e]->close = true;
+}
 Noeud* Graphe::getNoeud(int nb){
     return noeuds[nb];
 }

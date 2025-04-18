@@ -6,8 +6,23 @@ vector<int> cyclicRouting(Graphe g, vector<int> Cyclic){
     vector<int> P1 = filtrerParcours(g, Cyclic);
 
     vector<vector<int>> P = cyclic(g, Cyclic, P1, current_sens);
+    cout << "P : ";
+    for(vector<int> p : P){
+        cout << "p :";
+        for(int i : p){
+            cout << i << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
 
     vector<int> P_end = lastCyclic(P,g, Cyclic, current_sens);
+    cout << "P_end : ";
+    for(int p : P_end){
+        cout << p << " ";
+
+    }
+    cout << endl;
 
     vector<int> c = contracte(P, P_end);
 
@@ -213,7 +228,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
             
             // Vérifier si le nœud précédent est déjà dans le chemin
             if (find(p.begin(), p.end(), noeudPrecedent) == p.end()) {
-                p.push_back(noeudPrecedent);
+                p.push_back(noeudPrecedent); 
                 already_explor.insert(noeudPrecedent);
             }
             
@@ -287,7 +302,6 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                 }
             }
             
-            cout << "État de 11: " << (already_explor.find(11) == already_explor.end() ? "non exploré" : "exploré") << endl;
         }
         
         // Ajouter le dernier nœud de current_not_explore s'il n'est pas déjà exploré
@@ -355,9 +369,6 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
             break;
         }
     }
-    
-    cout << "À la fin de l'itération " << iteration_count << ", 11 est " 
-         << (already_explor.find(11) == already_explor.end() ? "non exploré" : "exploré") << endl;
     
     // Si p contient encore des nœuds, l'ajouter au résultat
     if (p.size() > 1) {
@@ -448,39 +459,26 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
         }
     };
     
-    while (current != firstPos && pathValid) {
-        current = nextPosition(current, currentSens);
-        int nextNode = Cyclic[current];
+    int lookAhead = current;
+        // Limiter la recherche à la longueur du cycle pour éviter des boucles infinies
+    for (size_t i = 0; i < Cyclic.size() && current != firstPos; i++) {
+        lookAhead = nextPosition(lookAhead, currentSens);
+        int potentialNode = Cyclic[lookAhead];
         
-        // Vérifier si l'arête est disponible
-        Edge* e = g.getEdge(finalPath.back(), nextNode);
-        if (e && !e->close) {
-            finalPath.push_back(nextNode);
-        } else {
-            // Arête non disponible, chercher un raccourci
-            int lookAhead = current;
-
-            // Limiter la recherche à la longueur du cycle pour éviter des boucles infinies
-            for (size_t i = 0; i < Cyclic.size(); i++) {
-                lookAhead = nextPosition(lookAhead, currentSens);
-                int potentialNode = Cyclic[lookAhead];
-                
-                // Vérifier si on peut aller directement au nœud potentiel
-                Edge* shortcut = g.getEdge(finalPath.back(), potentialNode);
-                if (shortcut && !shortcut->close) {
-                    // Raccourci trouvé, ajouter et mettre à jour la position courante
-                    finalPath.push_back(potentialNode);
-                    current = lookAhead;
-                    break;
-                }
-                
-                // Si on a dépassé le nœud de destination, arrêter
-                if (lookAhead == firstPos) break;
-            }
+        // Vérifier si on peut aller directement au nœud potentiel
+        Edge* shortcut = g.getEdge(finalPath.back(), potentialNode);
+        Edge* linck_end = g.getEdge(potentialNode, firstNode);
+        if (shortcut && linck_end && !shortcut->close && !linck_end->close) {
+            // Raccourci trouvé, ajouter et mettre à jour la position courante
+            finalPath.push_back(potentialNode);
+            finalPath.push_back(firstNode);
+            cout << "la sa devrais etre 0 : " << finalPath.back() << endl;
+            current = firstPos;
         }
     }
-    
-    // Si le chemin ne se termine pas par le nœud de départ, ajouter une connexion directe
+
+    cout << "la les noeud devris etre les même " << finalPath.back() << " et " << firstNode <<endl;
+        // Si le chemin ne se termine pas par le nœud de départ, ajouter une connexion directe
     if (pathValid && finalPath.back() != firstNode) {
         Edge* finalEdge = g.getEdge(finalPath.back(), firstNode);
         if (finalEdge && !finalEdge->close) {
@@ -488,27 +486,24 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
         } else {
             // Si pas de connexion directe à la fin, le chemin n'est pas valide
             pathValid = false;
+        
+        }
+        
+        
+        // Afficher le raccourci trouvé
+        if (!finalPath.empty() && finalPath.back() == firstNode) {
+            cout << "Raccourci trouvé : ";
+            for (int node : finalPath) {
+                cout << node << " ";
+            }
+            cout << endl;
+        } else {
+            cout << "Aucun raccourci valide n'a pu être trouvé" << endl;
+            finalPath.clear();
         }
     }
-    
-    
-    // Afficher le raccourci trouvé
-    if (!finalPath.empty() && finalPath.back() == firstNode) {
-        cout << "Raccourci trouvé : ";
-        for (int node : finalPath) {
-            cout << node << " ";
-        }
-        cout << endl;
-    } else {
-        cout << "Aucun raccourci valide n'a pu être trouvé" << endl;
-        finalPath.clear();
-    }
-    
     return finalPath;
-
-
 }
-
 int trouverIndice(const vector<int>& liste, int valeur) {
     auto it = find(liste.begin(), liste.end(), valeur);
     

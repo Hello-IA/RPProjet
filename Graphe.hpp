@@ -29,7 +29,7 @@ public:
 	vector<int> DistAleatoires(int k, int nb_edge, int n, int seed);
 	vector<Noeud*> noeuds;
 	vector<Edge*> edges;
-
+	void closeParticularRoad(int e);
 };
 
 #endif 
