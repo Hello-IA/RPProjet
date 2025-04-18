@@ -29,7 +29,7 @@ vector<int> cyclicRouting(Graphe g, vector<int> Cyclic){
     return c;
 }
 
-vector<int> contracte(const vector<vector<int>>& P, const vector<int>& P_end) {
+vector<int> contracte(const vector<vector<int> >& P, const vector<int>& P_end) {
     vector<int> cycle;
     
     // Ajouter tous les chemins intermédiaires
