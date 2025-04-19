@@ -350,7 +350,7 @@ vector<Edge*> find_augmenting_path(Graphe* g, vector<Edge*> m) {
         Noeud* n = q.front();
         q.pop();
 
-        for (Edge* e : n->neighbor) {
+        for (Edge* e : n->neighboringEdges) {
             Noeud* w = other(n, e);
             if (base[n] == base[w] || match[n] == e) {
                 continue;

@@ -16,9 +16,9 @@ class Noeud{
 public:
 	Noeud(int name);
 	int getName();
-	vector<Noeud*> getNeighbor();
-	vector<int> getNeigborName();
-	vector<Edge*> neighbor;
+	vector<Noeud*> getNeighbors();
+	vector<int> getNeighborsNames();
+	vector<Edge*> neighboringEdges;
 private:
 	int name;
 	

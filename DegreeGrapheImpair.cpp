@@ -3,7 +3,7 @@
 Graphe DGI(Graphe g, Graphe t){
 	Graphe I;
 	for(Noeud* noeudt : t.noeuds){
-		if(noeudt->neighbor.size()%2 == 1){
+		if(noeudt->neighboringEdges.size()%2 == 1){
 			I.addNoeud(new Noeud(noeudt->getName()));
 		}
 	}

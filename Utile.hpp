@@ -21,4 +21,8 @@ vector<int> removeDuplicates(vector<int> path);
 
 vector<int> christofides(Graphe g);
 
+vector<int> nearestNeighbor(Graphe*);
+
+float sumPath(Graphe*, vector<int>);
+
 #endif

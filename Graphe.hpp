@@ -19,6 +19,8 @@ class Graphe{
 
 public:
 	Graphe();
+	Graphe(vector<Noeud*>, vector<Edge*>);
+	Graphe(Graphe*, vector<int>, vector<Edge*>);
 
 	void addNoeud(Noeud* name);
 	void display(string path);
