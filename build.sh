@@ -3,7 +3,7 @@
 echo "===== Script de compilation ====="
 
 CXX=g++
-CXXFLAGS="-Wall -Wextra -std=c++17 -mmacosx-version-min=14.0"
+CXXFLAGS="-w -Wall -Wextra -std=c++17 -mmacosx-version-min=14.0"
 GRAPHVIZ_INCLUDE="/usr/local/include/graphviz"
 GRAPHVIZ_LIB="/usr/local/lib"
 LIBS="-lgvc -lcgraph -lcdt"

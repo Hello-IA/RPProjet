@@ -23,6 +23,8 @@ vector<int> christofides(Graphe g);
 
 vector<int> nearestNeighbor(Graphe*);
 
-float sumPath(Graphe*, vector<int>);
+double sumPath(Graphe*, vector<int>);
+
+vector<int> shortestPathDijkstra(Graphe*, Noeud* , Noeud*, double*);
 
 #endif

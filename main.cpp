@@ -6,6 +6,7 @@
 #include "DegreeGrapheImpair.hpp"
 #include "Coupling.hpp"
 #include "CyclicRouting.hpp"
+#include "CNN.hpp"
 #include "Utile.hpp"
 #include <iostream>
 #include <graphviz/gvc.h>
@@ -28,6 +29,7 @@ int main() {
 
     cout << endl;
     vector<int> p1 = cyclicRouting(g, Christofides);
+    vector<int> p2 = cnn(&g, Christofides);
     cout << "oui"  << endl;
 
     return 0;

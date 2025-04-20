@@ -75,7 +75,7 @@ vector<int> contracte(const vector<vector<int> >& P, const vector<int>& P_end) {
     }
     
     // Affichage du cycle pour vérification
-    cout << "Cycle contracté final: ";
+    cout << "Cycle contracté final (CR): ";
     for (int node : cycle) {
         cout << node << " ";
     }

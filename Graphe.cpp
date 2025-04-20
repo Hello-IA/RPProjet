@@ -10,14 +10,13 @@ Graphe::Graphe(vector<Noeud*> sommets, vector<Edge*> aretes) {
 }
 
 Graphe::Graphe(Graphe* g, vector<int> ids_sommets, vector<Edge*> aretes) {
-    vector<Noeud*> sommets;
     for (int id : ids_sommets) {
         Noeud* n = g->getNoeud(id);
         if(n != nullptr) {
-            sommets.push_back(n);
+            noeuds.push_back(n);
         }
     }
-    Graphe(sommets, aretes);
+    edges = aretes;
 }
 
 void Graphe::addNoeud(Noeud* newN){
