@@ -16,9 +16,9 @@
 int main() {
     //SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
     agseterr(AGMAX);
-    Graphe g = initKCCTP(16, 14, 3, 50, 50);
+    //Graphe g = initKCCTP(16, 14, 3, 50, 50);
+    Graphe g = initKCCTP(10, 8, 3, 50, 1);
     g.display("output.png");
-    //Graphe g = initKCCTP(6, 0, 0, 20, 50);
     
     vector<int> Christofides = christofides(g);
     cout << "Christofides : ";
@@ -29,7 +29,9 @@ int main() {
 
     cout << endl;
     vector<int> p1 = cyclicRouting(g, Christofides);
-    vector<int> p2 = cnn(&g, Christofides);
+    cout << "CR " << ((is_valid_cycle(g, p1)) ? "" : "pas ") << "ok" << endl;
+    vector<int> p2 = cnn(g, Christofides);
+    cout << "CNN " << ((is_valid_cycle(g, p2)) ? "" : "pas ") << "ok" << endl;
     cout << "oui"  << endl;
 
     return 0;

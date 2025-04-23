@@ -11,6 +11,6 @@
 #include <iostream>
 #include<unordered_set>
 
-vector<int> cnn(Graphe*, vector<int>);
+vector<int> cnn(Graphe, vector<int>);
 
 #endif
