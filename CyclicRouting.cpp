@@ -60,6 +60,7 @@ vector<int> contracte(const vector<vector<int>>& P, const vector<int>& P_end) {
         if (cycle.empty() || cycle.back() != P_end.front()) {
             // Si non, l'ajouter
             cycle.push_back(P_end.front());
+
         }
         
         // Ajouter les autres nœuds de P_end
@@ -68,11 +69,6 @@ vector<int> contracte(const vector<vector<int>>& P, const vector<int>& P_end) {
         }
     }
     
-    // Vérification: si le dernier nœud est égal au premier, le supprimer
-    // pour éviter les doublons dans le cycle
-    if (cycle.size() > 1 && cycle.back() == cycle.front()) {
-        cycle.pop_back();
-    }
     
     // Affichage du cycle pour vérification
     cout << "Cycle contracté final: ";
@@ -101,7 +97,7 @@ vector<int> filtrerParcours(Graphe g, vector<int> Cyclic){
         if (e && !e->close) {
             resultat.push_back(noeudActuel);
         }else{
-            cout << "imposible de se rendre de "<< noeudPrecedent << "au noeud" << noeudActuel << endl;
+            cout << "imposible de se rendre de "<< noeudPrecedent << " au noeud " << noeudActuel << endl;
         }
     }
     return resultat;
@@ -220,8 +216,8 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
         cout << endl;
         
         // Parcours des nœuds dans l'ordre cyclique
+        int noeudPrecedent = current_not_explore[0];
         for (size_t i = 0; i < current_not_explore.size() - 1; i++) {
-            int noeudPrecedent = current_not_explore[i];
             int noeudActuel = current_not_explore[i + 1];
             
             cout << "Traitement des noeuds " << noeudPrecedent << " -> " << noeudActuel << endl;
@@ -239,6 +235,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                 if (already_explor.find(noeudActuel) == already_explor.end()) {
                     p.push_back(noeudActuel);
                     already_explor.insert(noeudActuel);
+                    noeudPrecedent = noeudActuel;
                     cout << "Nœud " << noeudActuel << " ajouté au chemin et marqué comme exploré" << endl;
                 }
             } else {
@@ -266,12 +263,15 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                         
                         for (int j = start + 1; j < end && !raccourci_trouve; j++) {
                             int node_idx = j % Cyclic.size();
-                            Edge* ee = g.getEdge(noeudPrecedent, Cyclic[node_idx]);
-                            
-                            if (ee && !ee->close && already_explor.find(Cyclic[node_idx]) == already_explor.end()) {
+                            Edge* ee1 = g.getEdge(noeudPrecedent, Cyclic[node_idx]);
+                            Edge* ee2 = g.getEdge(noeudActuel, Cyclic[node_idx]);
+                            if (ee1 && ee2 && !ee1->close && !ee1->close && already_explor.find(Cyclic[node_idx]) == already_explor.end() && already_explor.find(noeudActuel) == already_explor.end()) {
                                 cout << "Raccourci trouvé via " << Cyclic[node_idx] << endl;
                                 p.push_back(Cyclic[node_idx]);
                                 already_explor.insert(Cyclic[node_idx]);
+                                p.push_back(noeudActuel);
+                                already_explor.insert(noeudActuel);
+                                noeudPrecedent = noeudActuel;
                                 raccourci_trouve = true;
                             }
                         }
@@ -283,12 +283,15 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                         
                         for (int j = start - 1; j > end && !raccourci_trouve; j--) {
                             int node_idx = (j + Cyclic.size()) % Cyclic.size();
-                            Edge* ee = g.getEdge(noeudPrecedent, Cyclic[node_idx]);
-                            
-                            if (ee && !ee->close && already_explor.find(Cyclic[node_idx]) == already_explor.end()) {
+                            Edge* ee1 = g.getEdge(noeudPrecedent, Cyclic[node_idx]);
+                            Edge* ee2 = g.getEdge(noeudActuel, Cyclic[node_idx]);
+                            if (ee1 && ee2 && !ee1->close && !ee1->close && already_explor.find(Cyclic[node_idx]) == already_explor.end() && already_explor.find(noeudActuel) == already_explor.end()) {
                                 cout << "Raccourci trouvé via " << Cyclic[node_idx] << endl;
                                 p.push_back(Cyclic[node_idx]);
                                 already_explor.insert(Cyclic[node_idx]);
+                                p.push_back(noeudActuel);
+                                already_explor.insert(noeudActuel);
+                                noeudPrecedent = noeudActuel;
                                 raccourci_trouve = true;
                             }
                         }
@@ -355,31 +358,9 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
             // Si tous les nœuds sont explorés, sortir de la boucle
             if (all_explored) {
                 cout << "Tous les nœuds sont explorés" << endl;
-                break;
             }
         }
         
-        cout << "not_explore à la fin d'itération: ";
-        for (int node : not_explore) { cout << node << " "; }
-        cout << endl;
-        
-        // Éviter les boucles infinies si not_explore reste identique
-        if (not_explore == current_not_explore) {
-            cout << "Pas de changement dans not_explore, sortie de la boucle" << endl;
-            break;
-        }
-    }
-    
-    // Si p contient encore des nœuds, l'ajouter au résultat
-    if (p.size() > 1) {
-        result.push_back(p);
-    }
-    
-    // Afficher les chemins résultants
-    for (size_t i = 0; i < result.size(); i++) {
-        cout << "Lite P" << i << " ";
-        for (int node : result[i]) { cout << node << " "; }
-        cout << endl;
     }
     
     return result;
