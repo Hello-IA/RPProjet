@@ -140,27 +140,27 @@ vector<int> cnn(Graphe* G, vector<int> christo) {
     }
 */
     vector<int> P2 = nearestNeighbor(&G_prim);
-
+    /*
     cout << "P1 : ";
     for (int node : P1) {
         cout << node << " ";
     }
-    cout << endl;
-
+    cout << endl;*/
+    /*
     cout << "P2 : ";
     for (int node : P2) {
         cout << node << " ";
     }
     cout << endl;
-
+    */
     vector<int> P_prim = concatP1P2(P1, P2);
     //P_prim.insert(P_prim.end()-1, P2.begin(), P2.end());
-
+    /*
     cout << "Cycle contracté final (CNN): ";
     for (int node : P_prim) {
         cout << node << " ";
     }
     cout << endl;
-
+    */
     return P_prim;
 }

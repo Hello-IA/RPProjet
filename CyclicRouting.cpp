@@ -6,6 +6,7 @@ vector<int> cyclicRouting(Graphe g, vector<int> Cyclic){
     vector<int> P1 = filtrerParcours(g, Cyclic);
 
     vector<vector<int>> P = cyclic(g, Cyclic, P1, current_sens);
+    /*
     cout << "P : ";
     for(vector<int> p : P){
         cout << "p :";
@@ -14,15 +15,16 @@ vector<int> cyclicRouting(Graphe g, vector<int> Cyclic){
         }
         cout << endl;
     }
-    cout << endl;
+    cout << endl;*/
 
     vector<int> P_end = lastCyclic(P,g, Cyclic, current_sens);
+    /*
     cout << "P_end : ";
     for(int p : P_end){
         cout << p << " ";
 
     }
-    cout << endl;
+    cout << endl;*/
 
     vector<int> c = contracte(P, P_end);
 
@@ -71,11 +73,12 @@ vector<int> contracte(const vector<vector<int> >& P, const vector<int>& P_end) {
     
     
     // Affichage du cycle pour vérification
+    /*
     cout << "Cycle contracté final (CR): ";
     for (int node : cycle) {
         cout << node << " ";
     }
-    cout << endl;
+    cout << endl;*/
     
     return cycle;
 }
@@ -97,7 +100,7 @@ vector<int> filtrerParcours(Graphe g, vector<int> Cyclic){
         if (e && !e->close) {
             resultat.push_back(noeudActuel);
         }else{
-            cout << "imposible de se rendre de "<< noeudPrecedent << " au noeud " << noeudActuel << endl;
+            //cout << "imposible de se rendre de "<< noeudPrecedent << " au noeud " << noeudActuel << endl;
         }
     }
     return resultat;
@@ -121,9 +124,9 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
     // Vérifie la condition pour le sens de parcours
     if (!result.empty() && result.back().size() > 0) {
         int vm_0 = Cyclic.back();
-        cout << "vm_0 " << vm_0 << endl;
+        //cout << "vm_0 " << vm_0 << endl;
         int vm_1_last = result.back().back();
-        cout << "vm_1_last " << vm_1_last << endl;
+        //cout << "vm_1_last " << vm_1_last << endl;
         
         if (vm_0 != vm_1_last) {
             current_sens = !current_sens;
@@ -139,9 +142,10 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
     }
     
     // Ajouter uniquement les nœuds non explorés
+    /*
     cout << "Cyclic : ";
     for(int i : Cyclic) { cout << i << " "; }
-    cout << endl;
+    cout << endl;*/
     
     for (int c : Cyclic) {
         if (already_explor.find(c) == already_explor.end() && 
@@ -149,10 +153,10 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
             not_explore.push_back(c);
         }
     }  
-
+    /*
     cout << "not_explore : ";  
     for(int i : not_explore) { cout << i << " "; }  
-    cout << endl;
+    cout << endl;*/
     
     // Débute le nouveau chemin avec le dernier nœud de P1
     vector<int> p;
@@ -166,7 +170,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
     
     while (!not_explore.empty() && iteration_count < max_iterations) {
         iteration_count++;
-        cout << "Itération " << iteration_count << endl;
+        //cout << "Itération " << iteration_count << endl;
         
         // Copier not_explore pour éviter les problèmes de modification pendant l'itération
         vector<int> current_not_explore = not_explore;
@@ -208,19 +212,19 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                 current_not_explore = cyclically_ordered;
             }
         }
-        
+        /*
         cout << "current_not_explore réorganisé: ";
         for (int node : current_not_explore) { 
             cout << node << " "; 
         }
-        cout << endl;
+        cout << endl;*/
         
         // Parcours des nœuds dans l'ordre cyclique
         int noeudPrecedent = current_not_explore[0];
         for (size_t i = 0; i < current_not_explore.size() - 1; i++) {
             int noeudActuel = current_not_explore[i + 1];
             
-            cout << "Traitement des noeuds " << noeudPrecedent << " -> " << noeudActuel << endl;
+            //cout << "Traitement des noeuds " << noeudPrecedent << " -> " << noeudActuel << endl;
             
             // Vérifier si le nœud précédent est déjà dans le chemin
             if (find(p.begin(), p.end(), noeudPrecedent) == p.end()) {
@@ -231,15 +235,15 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
             // Si l'arête est disponible directement
             Edge* e = g.getEdge(noeudPrecedent, noeudActuel);
             if (e && !e->close) {
-                cout << "Arête directe disponible " << noeudPrecedent << " -> " << noeudActuel << endl;
+                //cout << "Arête directe disponible " << noeudPrecedent << " -> " << noeudActuel << endl;
                 if (already_explor.find(noeudActuel) == already_explor.end()) {
                     p.push_back(noeudActuel);
                     already_explor.insert(noeudActuel);
                     noeudPrecedent = noeudActuel;
-                    cout << "Nœud " << noeudActuel << " ajouté au chemin et marqué comme exploré" << endl;
+                    //cout << "Nœud " << noeudActuel << " ajouté au chemin et marqué comme exploré" << endl;
                 }
             } else {
-                cout << "Pas d'arête directe, recherche d'un raccourci" << endl;
+                //cout << "Pas d'arête directe, recherche d'un raccourci" << endl;
                 // L'arête n'est pas disponible, rechercher un raccourci
                 int idx_prec = -1;
                 int idx_act = -1;
@@ -251,7 +255,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                 }
                 
                 if (idx_prec != -1 && idx_act != -1) {
-                    cout << "Index trouvés: " << noeudPrecedent << " à " << idx_prec << ", " << noeudActuel << " à " << idx_act << endl;
+                    //cout << "Index trouvés: " << noeudPrecedent << " à " << idx_prec << ", " << noeudActuel << " à " << idx_act << endl;
                     
                     bool raccourci_trouve = false;
                     
@@ -266,7 +270,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                             Edge* ee1 = g.getEdge(noeudPrecedent, Cyclic[node_idx]);
                             Edge* ee2 = g.getEdge(noeudActuel, Cyclic[node_idx]);
                             if (ee1 && ee2 && !ee1->close && !ee1->close && already_explor.find(Cyclic[node_idx]) == already_explor.end() && already_explor.find(noeudActuel) == already_explor.end()) {
-                                cout << "Raccourci trouvé via " << Cyclic[node_idx] << endl;
+                                //cout << "Raccourci trouvé via " << Cyclic[node_idx] << endl;
                                 p.push_back(Cyclic[node_idx]);
                                 already_explor.insert(Cyclic[node_idx]);
                                 p.push_back(noeudActuel);
@@ -286,7 +290,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                             Edge* ee1 = g.getEdge(noeudPrecedent, Cyclic[node_idx]);
                             Edge* ee2 = g.getEdge(noeudActuel, Cyclic[node_idx]);
                             if (ee1 && ee2 && !ee1->close && !ee1->close && already_explor.find(Cyclic[node_idx]) == already_explor.end() && already_explor.find(noeudActuel) == already_explor.end()) {
-                                cout << "Raccourci trouvé via " << Cyclic[node_idx] << endl;
+                                //cout << "Raccourci trouvé via " << Cyclic[node_idx] << endl;
                                 p.push_back(Cyclic[node_idx]);
                                 already_explor.insert(Cyclic[node_idx]);
                                 p.push_back(noeudActuel);
@@ -299,7 +303,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                     
                     // Si aucun raccourci n'est trouvé, ajouter le nœud actuel à not_explore pour traitement ultérieur
                     if (!raccourci_trouve && already_explor.find(noeudActuel) == already_explor.end()) {
-                        cout << "Pas de raccourci trouvé, " << noeudActuel << " ajouté à not_explore" << endl;
+                        //cout << "Pas de raccourci trouvé, " << noeudActuel << " ajouté à not_explore" << endl;
                         not_explore.push_back(noeudActuel);
                     }
                 }
@@ -313,10 +317,10 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
             p.push_back(current_not_explore.back());
             already_explor.insert(current_not_explore.back());
         }
-        
+        /*
         cout << "Chemin actuel p: ";
         for (int node : p) { cout << node << " "; }
-        cout << endl;
+        cout << endl;*/
         
         // Si le chemin p a plus d'un élément, l'ajouter au résultat
         if (p.size() > 1) {
@@ -329,7 +333,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                 
                 if (Vm == Vm_plus_1) {
                     current_sens = !current_sens;
-                    cout << "Changement de sens: " << (current_sens ? "horaire" : "anti-horaire") << endl;
+                    //cout << "Changement de sens: " << (current_sens ? "horaire" : "anti-horaire") << endl;
                 }
             }
             
@@ -350,14 +354,14 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                 if (already_explor.find(c) == already_explor.end()) {
                     not_explore.push_back(c);
                     all_explored = false;
-                    cout << "Nouveau point de départ trouvé: " << c << endl;
+                    //cout << "Nouveau point de départ trouvé: " << c << endl;
                     break;
                 }
             }
             
             // Si tous les nœuds sont explorés, sortir de la boucle
             if (all_explored) {
-                cout << "Tous les nœuds sont explorés" << endl;
+                //cout << "Tous les nœuds sont explorés" << endl;
             }
         }
         
@@ -379,21 +383,21 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
     int firstNode = result.front().front();  // Premier nœud du premier chemin
     int lastNode = result.back().back();     // Dernier nœud du dernier chemin
     
-    cout << "Recherche d'un raccourci de " << lastNode << " vers " << firstNode << endl;
+    //cout << "Recherche d'un raccourci de " << lastNode << " vers " << firstNode << endl;
     
     // Vérifier s'il existe un lien direct
     Edge* direct = g.getEdge(lastNode, firstNode);
     
     if (direct && !direct->close) {
         // Si un lien direct existe, l'utiliser simplement
-        cout << "Lien direct trouvé entre " << lastNode << " et " << firstNode << endl;
+        //cout << "Lien direct trouvé entre " << lastNode << " et " << firstNode << endl;
         finalPath.push_back(lastNode);
         finalPath.push_back(firstNode);
         return finalPath;
     }
     
     // Pas de lien direct, rechercher un raccourci à travers Cyclic
-    cout << "Pas de lien direct, recherche d'un raccourci à travers le cycle" << endl;
+    //cout << "Pas de lien direct, recherche d'un raccourci à travers le cycle" << endl;
     
     // Déterminer le sens du parcours en fonction des règles spécifiées
     bool currentSens = previousSens;
@@ -405,9 +409,9 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
         
         if (vm_0 != vm_1_last) {
             currentSens = !previousSens;
-            cout << "Changement de sens car vm,0 ≠ vm−1,|Vm−1|" << endl;
+            //cout << "Changement de sens car vm,0 ≠ vm−1,|Vm−1|" << endl;
         } else {
-            cout << "Même sens car vm,0 = vm−1,|Vm−1|" << endl;
+            //cout << "Même sens car vm,0 = vm−1,|Vm−1|" << endl;
         }
     }
     
@@ -419,11 +423,11 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
     }
     
     if (lastPos == -1 || firstPos == -1) {
-        cout << "Impossible de trouver l'un des nœuds dans Cyclic" << endl;
+        //cout << "Impossible de trouver l'un des nœuds dans Cyclic" << endl;
         return vector<int>();
     }
     
-    cout << "Parcours dans le sens " << (currentSens ? "horaire" : "anti-horaire") << endl;
+    //cout << "Parcours dans le sens " << (currentSens ? "horaire" : "anti-horaire") << endl;
     
     finalPath.clear();
     finalPath.push_back(lastNode);
@@ -453,12 +457,12 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
             // Raccourci trouvé, ajouter et mettre à jour la position courante
             finalPath.push_back(potentialNode);
             finalPath.push_back(firstNode);
-            cout << "la sa devrais etre 0 : " << finalPath.back() << endl;
+            //cout << "la sa devrais etre 0 : " << finalPath.back() << endl;
             current = firstPos;
         }
     }
 
-    cout << "la les noeud devris etre les même " << finalPath.back() << " et " << firstNode <<endl;
+    //cout << "la les noeud devris etre les même " << finalPath.back() << " et " << firstNode <<endl;
         // Si le chemin ne se termine pas par le nœud de départ, ajouter une connexion directe
     if (pathValid && finalPath.back() != firstNode) {
         Edge* finalEdge = g.getEdge(finalPath.back(), firstNode);
@@ -473,13 +477,14 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
         
         // Afficher le raccourci trouvé
         if (!finalPath.empty() && finalPath.back() == firstNode) {
+            /*
             cout << "Raccourci trouvé : ";
             for (int node : finalPath) {
                 cout << node << " ";
             }
-            cout << endl;
+            cout << endl;*/
         } else {
-            cout << "Aucun raccourci valide n'a pu être trouvé" << endl;
+            //cout << "Aucun raccourci valide n'a pu être trouvé" << endl;
             finalPath.clear();
         }
     }

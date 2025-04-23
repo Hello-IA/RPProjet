@@ -115,7 +115,6 @@ void Graphe::closeParticularRoad(int e) {
 Noeud* Graphe::getNoeud(int nb){
     return noeuds[nb];
 }
-
 Edge* Graphe::getEdge(int n1, int n2){
     for(Edge* edge : edges){
         if((edge->getLinks()[0]->getName() == n1 && edge->getLinks()[1]->getName() == n2) ||(edge->getLinks()[1]->getName() == n1 && edge->getLinks()[0]->getName() == n2)){
