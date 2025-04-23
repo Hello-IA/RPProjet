@@ -106,60 +106,6 @@ vector<int> christofides(Graphe g){
     return c;
 }
 
-vector<int> nearestNeighbor(Graphe* g) {
-	vector<int> path;
-	unordered_map<int, bool> visited;
-
-	//cout << "nb de noeuds (nearestNeighbor) : " << g->noeuds.size() << endl;
-	Noeud* u = g->noeuds[0];
-	int start = u->getName();
-	path.push_back(start);
-	visited[start] = true;
-	size_t nbvisited = 1;
-
-	while(nbvisited < g->noeuds.size()) {
-
-		unordered_set<Edge*> edgeSet(g->edges.begin(), g->edges.end());
-
-		vector<Edge*> filtered_neighboringEdges;
-		for (Edge* e : u->neighboringEdges) {
-			if (edgeSet.count(e)) {
-				filtered_neighboringEdges.push_back(e);
-			}
-		}
-
-		vector<Edge*> voisins = filtered_neighboringEdges;
-		vector<Edge*> voisins_ouverts;
-
-		// Filtrer les arêtes fermées
-		copy_if(voisins.begin(), voisins.end(), back_inserter(voisins_ouverts), [&u, &visited](Edge* e) {
-            vector<Noeud*> links = e->getLinks();
-            int u_id = u->getName();
-            int v_id = (u_id == links[0]->getName()) ? links[1]->getName() : links[0]->getName();
-            return !visited[v_id];
-        });
-
-		if (voisins_ouverts.empty()) {
-			cerr << "Erreur : plus de voisins accessibles depuis le sommet " << u->getName() << endl;
-			break; // ou return path;
-		}
-
-		Edge* shortest = *min_element(voisins_ouverts.begin(), voisins_ouverts.end(), [](Edge* e1, Edge* e2) {
-			return e1->getValue() < e2->getValue();
-		});
-
-		vector<Noeud*> links = shortest->getLinks();
-		u = (u->getName() == links[0]->getName()) ? links[1] : links[0];
-
-		int u_id = u->getName();
-		path.push_back(u_id);
-		visited[u_id] = true;
-		nbvisited++;
-	}
-	path.push_back(start);
-	return path;
-}
-
 double sumPath(Graphe* g, vector<int> path) {
 	cout << "enter sumPath" << endl;
 	double sum = 0;
@@ -252,4 +198,14 @@ vector<int> shortestPathDijkstra(Graphe* g, Noeud* s, Noeud* t, double* sum) {
 
 	//cout << "dijkstra ok, taille du path : " << path.size() << ", poids du path : " << *sum << endl;
 	return path;
+}
+
+bool is_valid_cycle(Graphe g, vector<int> cycle) {
+    //if (cycle.front() != cycle.back()) return false;
+    for (int i = 0; i < cycle.size() - 1; i++) {
+        if (cycle[i] == cycle[i+1]) return false;
+        Edge* e = g.getEdge(cycle[i], cycle[i+1]);
+        if (!e || e->close) return false;
+    }
+    return true;
 }
