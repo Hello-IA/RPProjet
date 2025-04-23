@@ -23,25 +23,25 @@ vector<int> concatP1P2(vector<int> P1, vector<int> P2) {
 }
 
 
-vector<int> shortCut(Graphe* g, vector<int> cycle, vector<Edge*>* Eb, vector<int>* Us) {
+vector<int> shortCut(Graphe g, vector<int> cycle, /*vector<Edge*>* Eb,*/ vector<int>* Us) {
     int i = 0;
     int j = 1;
 
     vector<int> resultat;
     resultat.push_back(cycle[0]);
 
-    while (j < g->noeuds.size()) {
+    while (j < g.noeuds.size()) {
         //cout << cycle[i] << " vers " << cycle[j] << " ? ";
-        for (Noeud* n : g->noeuds) {
+        /*for (Noeud* n : g.noeuds) {
             if (n->getName() != cycle[i]) {
-                Edge* e = g->getEdge(cycle[i], n->getName());
+                Edge* e = g.getEdge(cycle[i], n->getName());
                 if (e && e->close) {
                     Eb->push_back(e);
                 }
             }
-        }
+        }*/
         
-        Edge* e = g->getEdge(cycle[i], cycle[j]);
+        Edge* e = g.getEdge(cycle[i], cycle[j]);
         if (e && !e->close) {
             //cout << "oui !" << endl;
             resultat.push_back(cycle[j]);
@@ -53,7 +53,7 @@ vector<int> shortCut(Graphe* g, vector<int> cycle, vector<Edge*>* Eb, vector<int
         j++;
     }
 
-    Edge* e_end = g->getEdge(cycle[i], cycle[0]);
+    Edge* e_end = g.getEdge(cycle[i], cycle[0]);
     if (e_end && !e_end->close) {
         resultat.push_back(cycle[0]);
     } else {
@@ -63,10 +63,11 @@ vector<int> shortCut(Graphe* g, vector<int> cycle, vector<Edge*>* Eb, vector<int
     return resultat;
 }
 
-Graphe compress(Graphe* G_star, vector<int> Us, Graphe *G) {
+Graphe compress(/*Graphe* G_star,*/ vector<int> Us, Graphe G) {
+
     unordered_set<int> Us_set(Us.begin(), Us.end());
     vector<Edge*> E_prim;
-    for (Edge* e : G->edges) {
+    for (Edge* e : G.edges) {
         vector<Noeud*> links = e->getLinks();
         if (Us_set.count(links[0]->getName()) && Us_set.count(links[1]->getName())) {
             E_prim.push_back(e);
@@ -82,11 +83,11 @@ Graphe compress(Graphe* G_star, vector<int> Us, Graphe *G) {
 
     unordered_set<Edge*> E_prim_set(E_prim.begin(), E_prim.end());
     vector<Edge*> E_without_E_prim;
-    copy_if(G->edges.begin(), G->edges.end(), back_inserter(E_without_E_prim), [&E_prim_set](Edge* e){
+    copy_if(G.edges.begin(), G.edges.end(), back_inserter(E_without_E_prim), [&E_prim_set](Edge* e){
         return !E_prim_set.count(e);
     });
 
-    Graphe H = Graphe(G->noeuds, E_without_E_prim);
+    Graphe H = Graphe(G.noeuds, E_without_E_prim);
 
     for (int i = 0; i < Us.size(); i++) {
         for (int j=i+1; j < Us.size(); j++) {
@@ -102,19 +103,89 @@ Graphe compress(Graphe* G_star, vector<int> Us, Graphe *G) {
     return G_prim;
 }
 
-vector<int> cnn(Graphe* G, vector<int> christo) {
-    vector<Edge*> Eb;
+vector<int> nearestNeighbor(Graphe* g) {
+	vector<int> path;
+	unordered_map<int, bool> visited;
+
+	cout << "nb de noeuds (nearestNeighbor) : " << g->noeuds.size() << endl;
+	Noeud* u = g->noeuds[0];
+	int start = u->getName();
+	path.push_back(start);
+	visited[start] = true;
+	size_t nbvisited = 1;
+
+	while(nbvisited < g->noeuds.size()) {
+
+		unordered_set<Edge*> edgeSet(g->edges.begin(), g->edges.end());
+
+		vector<Edge*> filtered_neighboringEdges;
+		for (Edge* e : u->neighboringEdges) {
+			if (edgeSet.count(e)) {
+				filtered_neighboringEdges.push_back(e);
+			}
+		}
+
+		vector<Edge*> voisins = filtered_neighboringEdges;
+		vector<Edge*> voisins_ouverts;
+
+		// Filtrer les arêtes fermées
+		copy_if(voisins.begin(), voisins.end(), back_inserter(voisins_ouverts), [&u, &visited](Edge* e) {
+            vector<Noeud*> links = e->getLinks();
+            int u_id = u->getName();
+            int v_id = (u_id == links[0]->getName()) ? links[1]->getName() : links[0]->getName();
+            return !visited[v_id];
+        });
+
+		if (voisins_ouverts.empty()) {
+			cerr << "Erreur : plus de voisins accessibles depuis le sommet " << u->getName() << endl;
+			break; // ou return path;
+		}
+
+		Edge* shortest = *min_element(voisins_ouverts.begin(), voisins_ouverts.end(), [](Edge* e1, Edge* e2) {
+			return e1->getValue() < e2->getValue();
+		});
+
+		vector<Noeud*> links = shortest->getLinks();
+		u = (u->getName() == links[0]->getName()) ? links[1] : links[0];
+
+		int u_id = u->getName();
+		path.push_back(u_id);
+		visited[u_id] = true;
+		nbvisited++;
+	}
+	path.push_back(start);
+	return path;
+}
+
+vector<int> cnn(Graphe G, vector<int> christo) {
+    //vector<Edge*> Eb;
     vector<int> U;
 
-    vector<int> P1 = shortCut(G, christo, &Eb, &U);
+    cout << "christofides (rappel) : ";
+    for (int x : christo) {
+        cout << x << " ";
+    }
+    cout << endl;
 
+    vector<int> P1 = shortCut(G, christo, /*&Eb,*/ &U);
+
+    cout << "P1 : ";
+    for (int node : P1) {
+        cout << node << " ";
+    }
+    cout << endl;
+
+    if (U.empty()) return P1;
+
+    /*
     unordered_set<Edge*> Eb_set(Eb.begin(), Eb.end());
     vector<Edge*> E_without_Eb;
-    copy_if(G->edges.begin(), G->edges.end(), back_inserter(E_without_Eb), [&Eb_set](Edge* e){
+    copy_if(G.edges.begin(), G.edges.end(), back_inserter(E_without_Eb), [&Eb_set](Edge* e){
         return !Eb_set.count(e);
     });
+    */
 
-    Graphe G_star = Graphe(G->noeuds, E_without_Eb);
+    //Graphe G_star = Graphe(G.noeuds, E_without_Eb);
     /*
     cout << "G* (Noeuds de G, arêtes de G sans celles qu'on sait bloquées)" << endl;
     for (Noeud* n : G_star.noeuds) {
@@ -127,7 +198,8 @@ vector<int> cnn(Graphe* G, vector<int> christo) {
     }*/
 
     
-    Graphe G_prim = compress(&G_star, U, G);
+    Graphe G_prim = compress(/*&G_star,*/ U, G);
+    //cout << "compress ok" << endl;
 /*
     cout << "G' (Noeuds de G non visités, arêtes dont on ne connaît pas la nature)" << endl;
     for (Noeud* n : G_prim.noeuds) {

@@ -9,9 +9,9 @@ Graphe::Graphe(vector<Noeud*> sommets, vector<Edge*> aretes) {
     edges = aretes;
 }
 
-Graphe::Graphe(Graphe* g, vector<int> ids_sommets, vector<Edge*> aretes) {
+Graphe::Graphe(Graphe g, vector<int> ids_sommets, vector<Edge*> aretes) {
     for (int id : ids_sommets) {
-        Noeud* n = g->getNoeud(id);
+        Noeud* n = g.getNoeud(id);
         if(n != nullptr) {
             noeuds.push_back(n);
         }
