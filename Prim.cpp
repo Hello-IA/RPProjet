@@ -36,7 +36,7 @@ Graphe prim(Graphe g, int s){
 		}
 		
 
-		vector<int> v = g.getNoeud(u)->getNeigborName();
+		vector<int> v = g.getNoeud(u)->getNeighborsNames();
 
 		for(int neighbor: v){
 			auto it = find(F.begin(), F.end(), neighbor);

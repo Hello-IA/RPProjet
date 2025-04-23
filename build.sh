@@ -3,7 +3,7 @@
 echo "===== Script de compilation ====="
 
 CXX=g++
-CXXFLAGS="-Wall -Wextra -std=c++17"
+CXXFLAGS="-w -Wall -Wextra -std=c++17 -mmacosx-version-min=14.0"
 GRAPHVIZ_INCLUDE="/usr/local/include/graphviz"
 GRAPHVIZ_LIB="/usr/local/lib"
 LIBS="-lgvc -lcgraph -lcdt"
@@ -12,7 +12,7 @@ TARGET="graphapp"
 
 echo
 echo "Compilation des fichiers source..."
-for file in *.cpp; do
+for file in $(find . -name "*.cpp"); do
     echo "Compilation de $file"
     $CXX -c $CXXFLAGS -I"$GRAPHVIZ_INCLUDE" "$file"
     if [ $? -ne 0 ]; then

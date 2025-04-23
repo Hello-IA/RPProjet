@@ -21,4 +21,10 @@ vector<int> removeDuplicates(vector<int> path);
 
 vector<int> christofides(Graphe g);
 
+vector<int> nearestNeighbor(Graphe*);
+
+double sumPath(Graphe*, vector<int>);
+
+vector<int> shortestPathDijkstra(Graphe*, Noeud* , Noeud*, double*);
+
 #endif

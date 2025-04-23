@@ -9,9 +9,9 @@ int Noeud::getName(){
 }
 
 
-vector<Noeud*> Noeud::getNeighbor(){
+vector<Noeud*> Noeud::getNeighbors(){
     vector<Noeud*> n;
-    for(Edge* e : neighbor){
+    for(Edge* e : neighboringEdges){
         if(e->getLinks()[0] != this){
             n.push_back(e->getLinks()[0]);
         }else{
@@ -21,8 +21,8 @@ vector<Noeud*> Noeud::getNeighbor(){
     return n;
 }
 
-vector<int> Noeud::getNeigborName(){
-    vector<Noeud*> nextNode = getNeighbor();
+vector<int> Noeud::getNeighborsNames(){
+    vector<Noeud*> nextNode = getNeighbors();
     vector<int> name;
     for(Noeud* n : nextNode){
         name.push_back(n->getName());

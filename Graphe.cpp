@@ -4,6 +4,21 @@ Graphe::Graphe(){
 
 }
 
+Graphe::Graphe(vector<Noeud*> sommets, vector<Edge*> aretes) {
+    noeuds = sommets;
+    edges = aretes;
+}
+
+Graphe::Graphe(Graphe* g, vector<int> ids_sommets, vector<Edge*> aretes) {
+    for (int id : ids_sommets) {
+        Noeud* n = g->getNoeud(id);
+        if(n != nullptr) {
+            noeuds.push_back(n);
+        }
+    }
+    edges = aretes;
+}
+
 void Graphe::addNoeud(Noeud* newN){
     bool exite = false;
     for(Noeud* n : noeuds){
@@ -43,8 +58,8 @@ void Graphe::closeRoad(int k,int nb_edge, int seed){
 void Graphe::addEdge(Noeud* n1, Noeud* n2, double value){
     Edge* e = new Edge(n1, n2, value);
     edges.push_back(e);
-    n1->neighbor.push_back(e);
-    n2->neighbor.push_back(e);
+    n1->neighboringEdges.push_back(e);
+    n2->neighboringEdges.push_back(e);
 }
 
 void Graphe::display(string path = "output.png"){
