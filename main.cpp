@@ -330,17 +330,25 @@ int main() {
             cout << i << " ";
         cout << " cout de CNN " << cout_cnn << endl;
 
+        
+
         //cout << "haha" <<endl;
         list_cnn.push_back(cout_cnn);
-        
+        /*
         vector<int> cycle_opt = findExactTSPSolutionFromTour(g, Christofides);
         cout_opt = pathCost(g, cycle_opt);
-
         cout << "Cycle OPT : ";
         for(int c : cycle_opt) 
         cout << c << " ";
-        cout << " cout de OPT " << cout_opt << endl;
-        list_opt.push_back(cout_opt);
+        cout << " cout de OPT " << cout_opt << endl;*/
+
+
+
+
+        
+        //list_opt.push_back(cout_opt);
+
+
         Christofides.clear();
         p1.clear();
         p2.clear();

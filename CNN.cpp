@@ -235,7 +235,7 @@ vector<int> cnn(Graphe G, vector<int> christo) {
     }
 */
     vector<int> P2 = nearestNeighbor(&G_prim, &G, &detours);
-    cout << "P1 : ";
+    /*cout << "P1 : ";
     for (int node : P1) {
         cout << node << " ";
     }

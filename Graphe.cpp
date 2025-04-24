@@ -52,6 +52,7 @@ vector<int> Graphe::DistAleatoires(int k, int nb_edge, int n, int seed) {
 void Graphe::closeRoad(int k,int nb_edge, int seed){
     for(int e : DistAleatoires(k, nb_edge, noeuds.size(), seed)){
         edges[e]->close = true;
+        cout << "g.closeParticularRoad(" << e << ");" << endl;
     }
 }
 

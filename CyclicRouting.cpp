@@ -27,7 +27,7 @@ vector<int> cyclicRouting(Graphe g, vector<int> Cyclic){
     cout << endl;*/
 
     vector<int> c = contracte(P, P_end);
-
+    /*
     cout << "Résultat de cyclicRouting:" << endl;
     cout << "  Entrée Cyclic: ";
     for (int n : Cyclic) cout << n << " ";
@@ -60,7 +60,7 @@ vector<int> cyclicRouting(Graphe g, vector<int> Cyclic){
     cout << "Arête 1->0: " << (e10 ? (e10->close ? "fermée" : "ouverte") : "inexistante") << endl;
     cout << "Arête 5->2: " << (e52 ? (e52->close ? "fermée" : "ouverte") : "inexistante") << endl;
     cout << "Arête 2->0: " << (e20 ? (e20->close ? "fermée" : "ouverte") : "inexistante") << endl;
-
+    */
 
     return c;
 }

@@ -10,6 +10,7 @@ Graphe initCTP(int nbNoeud, int min, int max, int seed){
 	for(int i = 0; i < nbNoeud; i++){
 		n = new Noeud(i);
 		g.addNoeud(n);
+		cout << "g.addNoeud(new Noeud(" << i << "));" << endl;
 	}
 
 	for(int i = 0; i < nbNoeud; i++){
@@ -21,6 +22,7 @@ Graphe initCTP(int nbNoeud, int min, int max, int seed){
 			if (i != j){
 				double distance = sqrt(pow(points[i].first  - points[j].first , 2) + pow(points[i].second  - points[j].second , 2));
 				g.addEdge(g.getNoeud(i), g.getNoeud(j), distance);
+				cout << "g.addEdge(g.getNoeud(" << i << "), g.getNoeud(" << j << "), " << distance << ");" << endl;
 			}
 		}
 	}
