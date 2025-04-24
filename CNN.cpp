@@ -107,7 +107,7 @@ vector<int> nearestNeighbor(Graphe* g) {
 	vector<int> path;
 	unordered_map<int, bool> visited;
 
-	cout << "nb de noeuds (nearestNeighbor) : " << g->noeuds.size() << endl;
+	//cout << "nb de noeuds (nearestNeighbor) : " << g->noeuds.size() << endl;
 	Noeud* u = g->noeuds[0];
 	int start = u->getName();
 	path.push_back(start);
@@ -161,19 +161,19 @@ vector<int> cnn(Graphe G, vector<int> christo) {
     //vector<Edge*> Eb;
     vector<int> U;
 
-    cout << "christofides (rappel) : ";
+    /*cout << "christofides (rappel) : ";
     for (int x : christo) {
         cout << x << " ";
     }
-    cout << endl;
+    cout << endl;*/
 
     vector<int> P1 = shortCut(G, christo, /*&Eb,*/ &U);
-
+    /*
     cout << "P1 : ";
     for (int node : P1) {
         cout << node << " ";
     }
-    cout << endl;
+    cout << endl;*/
 
     if (U.empty()) return P1;
 

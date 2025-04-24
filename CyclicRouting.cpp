@@ -28,6 +28,40 @@ vector<int> cyclicRouting(Graphe g, vector<int> Cyclic){
 
     vector<int> c = contracte(P, P_end);
 
+    cout << "Résultat de cyclicRouting:" << endl;
+    cout << "  Entrée Cyclic: ";
+    for (int n : Cyclic) cout << n << " ";
+    cout << endl;
+    cout << "  Résultat final: ";
+    for (int n : c) cout << n << " ";
+    cout << endl;
+
+    cout << "P_end : ";
+    for (int n : P_end) cout << n << " ";
+    cout << endl;
+
+    cout << "  Nœuds manquants: ";
+    set<int> cyclic_set(Cyclic.begin(), Cyclic.end());
+    cyclic_set.erase(Cyclic.back()); // Enlever le doublon si c'est un cycle
+    set<int> result_set(c.begin(), c.end());
+    for (int node : cyclic_set) {
+        if (result_set.find(node) == result_set.end()) {
+            cout << node << " ";
+        }
+    }
+    cout << endl;
+
+    Edge* e51 = g.getEdge(5, 1);
+    Edge* e10 = g.getEdge(1, 0);
+    Edge* e52 = g.getEdge(5, 2);
+    Edge* e20 = g.getEdge(2, 0);
+
+    cout << "Arête 5->1: " << (e51 ? (e51->close ? "fermée" : "ouverte") : "inexistante") << endl;
+    cout << "Arête 1->0: " << (e10 ? (e10->close ? "fermée" : "ouverte") : "inexistante") << endl;
+    cout << "Arête 5->2: " << (e52 ? (e52->close ? "fermée" : "ouverte") : "inexistante") << endl;
+    cout << "Arête 2->0: " << (e20 ? (e20->close ? "fermée" : "ouverte") : "inexistante") << endl;
+
+
     return c;
 }
 
@@ -110,6 +144,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
     vector<vector<int>> result;
     set<int> already_explor;
     Cyclic.pop_back(); // Retire le dernier élément (doublon)
+    bool equal = false;
     
     // Ajouter les nœuds de P1 à already_explor
     for (int node : P1) {
@@ -120,9 +155,14 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
     
     // Détermine le sens de parcours initial (true = horaire, false = anti-horaire)
     current_sens = true;
+
+    if(equal){
+        equal = false;
+        current_sens = !current_sens;
+    }
     
     // Vérifie la condition pour le sens de parcours
-    if (!result.empty() && result.back().size() > 0) {
+    if (!equal && !result.empty() && result.back().size() > 0) {
         int vm_0 = Cyclic.back();
         //cout << "vm_0 " << vm_0 << endl;
         int vm_1_last = result.back().back();
@@ -167,6 +207,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
     // Limite maximale d'itérations pour éviter les boucles infinies
     int max_iterations = Cyclic.size() * 2;
     int iteration_count = 0;
+
     
     while (!not_explore.empty() && iteration_count < max_iterations) {
         iteration_count++;
@@ -269,7 +310,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                             int node_idx = j % Cyclic.size();
                             Edge* ee1 = g.getEdge(noeudPrecedent, Cyclic[node_idx]);
                             Edge* ee2 = g.getEdge(noeudActuel, Cyclic[node_idx]);
-                            if (ee1 && ee2 && !ee1->close && !ee1->close && already_explor.find(Cyclic[node_idx]) == already_explor.end() && already_explor.find(noeudActuel) == already_explor.end()) {
+                            if (ee1 && ee2 && !ee1->close && !ee2->close) {
                                 //cout << "Raccourci trouvé via " << Cyclic[node_idx] << endl;
                                 p.push_back(Cyclic[node_idx]);
                                 already_explor.insert(Cyclic[node_idx]);
@@ -284,12 +325,12 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                         int start = idx_prec;
                         int end = idx_act;
                         if (start < end) start += Cyclic.size(); // Assurer que start > end
-                        
                         for (int j = start - 1; j > end && !raccourci_trouve; j--) {
+
                             int node_idx = (j + Cyclic.size()) % Cyclic.size();
                             Edge* ee1 = g.getEdge(noeudPrecedent, Cyclic[node_idx]);
                             Edge* ee2 = g.getEdge(noeudActuel, Cyclic[node_idx]);
-                            if (ee1 && ee2 && !ee1->close && !ee1->close && already_explor.find(Cyclic[node_idx]) == already_explor.end() && already_explor.find(noeudActuel) == already_explor.end()) {
+                            if (ee1 && ee2 && !ee1->close && !ee2->close) {
                                 //cout << "Raccourci trouvé via " << Cyclic[node_idx] << endl;
                                 p.push_back(Cyclic[node_idx]);
                                 already_explor.insert(Cyclic[node_idx]);
@@ -305,6 +346,7 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
                     if (!raccourci_trouve && already_explor.find(noeudActuel) == already_explor.end()) {
                         //cout << "Pas de raccourci trouvé, " << noeudActuel << " ajouté à not_explore" << endl;
                         not_explore.push_back(noeudActuel);
+                        current_sens = !current_sens;
                     }
                 }
             }
@@ -312,15 +354,19 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
         }
         
         // Ajouter le dernier nœud de current_not_explore s'il n'est pas déjà exploré
+        /*
         if (!current_not_explore.empty() && 
             already_explor.find(current_not_explore.back()) == already_explor.end()) {
             p.push_back(current_not_explore.back());
             already_explor.insert(current_not_explore.back());
-        }
+        }*/
         /*
         cout << "Chemin actuel p: ";
         for (int node : p) { cout << node << " "; }
         cout << endl;*/
+        if(p == result.back()){
+            equal = true;
+        }
         
         // Si le chemin p a plus d'un élément, l'ajouter au résultat
         if (p.size() > 1) {
@@ -365,6 +411,10 @@ vector<vector<int>> cyclic(Graphe g, vector<int> Cyclic, vector<int> P1, bool &c
             }
         }
         
+    }
+
+    if(iteration_count == max_iterations){
+        cout << "On est sorti de force" << endl;
     }
     
     return result;
@@ -488,6 +538,7 @@ vector<int> lastCyclic(vector<vector<int>> result, Graphe g, vector<int> Cyclic,
             finalPath.clear();
         }
     }
+    
     return finalPath;
 }
 int trouverIndice(const vector<int>& liste, int valeur) {
