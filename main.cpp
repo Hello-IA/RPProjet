@@ -29,9 +29,11 @@ int main() {
 
     cout << endl;
     vector<int> p1 = cyclicRouting(g, Christofides);
-    cout << "CR " << ((is_valid_cycle(g, p1)) ? "" : "pas ") << "ok" << endl;
+    bool p1_valid = is_valid_cycle(g, p1);
+    cout << "CR " << (p1_valid ? "" : "pas ") << "ok" << endl;
     vector<int> p2 = cnn(g, Christofides);
-    cout << "CNN " << ((is_valid_cycle(g, p2)) ? "" : "pas ") << "ok" << endl;
+    bool p2_valid = is_valid_cycle(g, p2);
+    cout << "CNN " << (p2_valid ? "" : "pas ") << "ok" << endl;
     cout << "oui"  << endl;
 
     return 0;
