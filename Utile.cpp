@@ -162,7 +162,7 @@ vector<int> shortestPathDijkstra(Graphe* g, Noeud* s, Noeud* t, double* sum) {
 
 			double d_v = distances_pred[v->getName()].first;
 			double d_u = distances_pred[u->getName()].first;
-			if (d_v > d_u + e->getValue()) {
+			if (!e->close && d_v > d_u + e->getValue()) {
 				double new_d_v = d_u + e->getValue();
 				distances_pred[v->getName()].first = new_d_v;
 				distances_pred[v->getName()].second = u->getName();

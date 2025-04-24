@@ -124,22 +124,22 @@ vector<int> nearestNeighbor(Graphe* G_prim, Graphe* g, unordered_map<Edge*, vect
 			}
 		}
 
-		vector<Edge*> voisins_ouverts;
+		vector<Edge*> voisins_non_visites;
 
-		// Filtrer les arêtes fermées
-		copy_if(filtered_neighboringEdges.begin(), filtered_neighboringEdges.end(), back_inserter(voisins_ouverts), [&u, &visited](Edge* e) {
+		// Filtrer les arêtes à la destination non visitée
+		copy_if(filtered_neighboringEdges.begin(), filtered_neighboringEdges.end(), back_inserter(voisins_non_visites), [&u, &visited](Edge* e) {
             vector<Noeud*> links = e->getLinks();
             int u_id = u->getName();
             int v_id = (u_id == links[0]->getName()) ? links[1]->getName() : links[0]->getName();
             return !visited[v_id];
         });
 
-		if (voisins_ouverts.empty()) {
-			cerr << "Erreur : plus de voisins accessibles depuis le sommet " << u->getName() << endl;
+		if (voisins_non_visites.empty()) {
+			cerr << "Erreur : plus de voisins non visités accessibles depuis le sommet " << u->getName() << endl;
 			break; // ou return path;
 		}
 
-		Edge* shortest = *min_element(voisins_ouverts.begin(), voisins_ouverts.end(), [](Edge* e1, Edge* e2) {
+		Edge* shortest = *min_element(voisins_non_visites.begin(), voisins_non_visites.end(), [](Edge* e1, Edge* e2) {
 			return e1->getValue() < e2->getValue();
 		});
 
@@ -147,16 +147,21 @@ vector<int> nearestNeighbor(Graphe* G_prim, Graphe* g, unordered_map<Edge*, vect
 		u = (u->getName() == links[0]->getName()) ? links[1] : links[0];
         
         Edge* edge_in_original = g->getEdge(links[0]->getName(), links[1]->getName());
-        if (edge_in_original && edge_in_original->close) {
-            vector<int> detour = detours->at(edge_in_original);
-            if (path.back() == detour.front()) {
-                path.insert(path.end(), detour.begin()+1, detour.end());
+        if (edge_in_original) {
+            if (detours->count(edge_in_original) == 0) {
+                path.push_back(u->getName());
             } else {
-                vector<int> detour_reverse(detour.rbegin(), detour.rend());
-                path.insert(path.end(), detour_reverse.begin()+1, detour_reverse.end());
+                vector<int> detour = detours->at(edge_in_original);
+                if (path.back() == detour.front()) {
+                    path.insert(path.end(), detour.begin()+1, detour.end());
+                } else {
+                    vector<int> detour_reverse(detour.rbegin(), detour.rend());
+                    path.insert(path.end(), detour_reverse.begin()+1, detour_reverse.end());
+                }
             }
         } else {
-		    path.push_back(u->getName());
+            cerr << "erreur: arête inexistante" << endl;
+            exit(1);
         }
 
 		visited[u->getName()] = true;
@@ -222,16 +227,16 @@ vector<int> cnn(Graphe G, vector<int> christo) {
 
     unordered_map<Edge*, vector<int> > detours;
     Graphe G_prim = compress(/*&G_star,*/ U, G, &detours);
-    //cout << "compress ok" << endl;
+
 /*
-    cout << "G' (Noeuds de G non visités, arêtes dont on ne connaît pas la nature)" << endl;
+    cout << "G' (Noeuds de G non visités (+ start), arêtes dont on ne connaît pas la nature)" << endl;
     for (Noeud* n : G_prim.noeuds) {
         cout << n->getName() << " ";
     }
     cout << endl;
     for (Edge* e : G_prim.edges) {
         vector<Noeud*> links = e->getLinks();
-        cout << links[0]->getName() << " <-> " << links[1]->getName() << endl;
+        cout << links[0]->getName() << " <-> " << links[1]->getName() << " : " << e->getValue() << endl;
     }
 */
     vector<int> P2 = nearestNeighbor(&G_prim, &G, &detours);
