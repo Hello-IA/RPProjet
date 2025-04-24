@@ -201,11 +201,20 @@ vector<int> shortestPathDijkstra(Graphe* g, Noeud* s, Noeud* t, double* sum) {
 }
 
 bool is_valid_cycle(Graphe g, vector<int> cycle) {
-    //if (cycle.front() != cycle.back()) return false;
+    if (cycle.front() != cycle.back()){
+		cout << "le cycle ne débute et termine pas au même endroit" << endl;
+		return false;
+	}
     for (int i = 0; i < cycle.size() - 1; i++) {
-        if (cycle[i] == cycle[i+1]) return false;
+        if (cycle[i] == cycle[i+1]) {
+			cout << cycle[i] << " n'est pas connecté à lui-même" << endl;
+			return false;
+		}
         Edge* e = g.getEdge(cycle[i], cycle[i+1]);
-        if (!e || e->close) return false;
+        if (!e || e->close) {
+			cout << cycle[i] << "<-X->" << cycle[i+1] << endl;
+			return false;
+		}
     }
     return true;
 }

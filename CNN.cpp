@@ -14,11 +14,6 @@ vector<int> concatP1P2(vector<int> P1, vector<int> P2) {
     // Ajouter P2 à P'
     P_prim.insert(P_prim.end(), P2.begin(), P2.end());
 
-    // Ajouter un retour à 0 si besoin
-    if (!P_prim.empty() && P_prim.back() != 0) {
-        P_prim.push_back(0);
-    }
-
     return P_prim;
 }
 
@@ -63,7 +58,7 @@ vector<int> shortCut(Graphe g, vector<int> cycle, /*vector<Edge*>* Eb,*/ vector<
     return resultat;
 }
 
-Graphe compress(/*Graphe* G_star,*/ vector<int> Us, Graphe G) {
+Graphe compress(/*Graphe* G_star,*/ vector<int> Us, Graphe G, unordered_map<Edge*, vector<int> >* detours) {
 
     unordered_set<int> Us_set(Us.begin(), Us.end());
     vector<Edge*> E_prim;
@@ -95,6 +90,11 @@ Graphe compress(/*Graphe* G_star,*/ vector<int> Us, Graphe G) {
             Noeud* vj = H.getNoeud(Us[j]);
             double c_ij;
             vector<int> P_ij = shortestPathDijkstra(&H, vi, vj, &c_ij);
+            
+            Edge* e = G.getEdge(vi->getName(), vj->getName());
+            if (e && e->close) {
+                detours->insert({e, P_ij});
+            }
 
             G_prim.addEdge(mapping_Gprim[Us[i]], mapping_Gprim[Us[j]], c_ij);
         }
@@ -103,20 +103,19 @@ Graphe compress(/*Graphe* G_star,*/ vector<int> Us, Graphe G) {
     return G_prim;
 }
 
-vector<int> nearestNeighbor(Graphe* g) {
+vector<int> nearestNeighbor(Graphe* G_prim, Graphe* g, unordered_map<Edge*, vector<int> >* detours) {
 	vector<int> path;
 	unordered_map<int, bool> visited;
 
-	//cout << "nb de noeuds (nearestNeighbor) : " << g->noeuds.size() << endl;
-	Noeud* u = g->noeuds[0];
+	Noeud* u = G_prim->noeuds[0];
 	int start = u->getName();
 	path.push_back(start);
 	visited[start] = true;
 	size_t nbvisited = 1;
 
-	while(nbvisited < g->noeuds.size()) {
+	while(nbvisited < G_prim->noeuds.size()) {
 
-		unordered_set<Edge*> edgeSet(g->edges.begin(), g->edges.end());
+		unordered_set<Edge*> edgeSet(G_prim->edges.begin(), G_prim->edges.end());
 
 		vector<Edge*> filtered_neighboringEdges;
 		for (Edge* e : u->neighboringEdges) {
@@ -125,11 +124,10 @@ vector<int> nearestNeighbor(Graphe* g) {
 			}
 		}
 
-		vector<Edge*> voisins = filtered_neighboringEdges;
 		vector<Edge*> voisins_ouverts;
 
 		// Filtrer les arêtes fermées
-		copy_if(voisins.begin(), voisins.end(), back_inserter(voisins_ouverts), [&u, &visited](Edge* e) {
+		copy_if(filtered_neighboringEdges.begin(), filtered_neighboringEdges.end(), back_inserter(voisins_ouverts), [&u, &visited](Edge* e) {
             vector<Noeud*> links = e->getLinks();
             int u_id = u->getName();
             int v_id = (u_id == links[0]->getName()) ? links[1]->getName() : links[0]->getName();
@@ -147,13 +145,37 @@ vector<int> nearestNeighbor(Graphe* g) {
 
 		vector<Noeud*> links = shortest->getLinks();
 		u = (u->getName() == links[0]->getName()) ? links[1] : links[0];
+        
+        Edge* edge_in_original = g->getEdge(links[0]->getName(), links[1]->getName());
+        if (edge_in_original && edge_in_original->close) {
+            vector<int> detour = detours->at(edge_in_original);
+            if (path.back() == detour.front()) {
+                path.insert(path.end(), detour.begin()+1, detour.end());
+            } else {
+                vector<int> detour_reverse(detour.rbegin(), detour.rend());
+                path.insert(path.end(), detour_reverse.begin()+1, detour_reverse.end());
+            }
+        } else {
+		    path.push_back(u->getName());
+        }
 
-		int u_id = u->getName();
-		path.push_back(u_id);
-		visited[u_id] = true;
+		visited[u->getName()] = true;
 		nbvisited++;
 	}
-	path.push_back(start);
+    if (path.size() > 1) {
+        Edge* edge_in_original = g->getEdge(path.back(), start);
+        if (edge_in_original && edge_in_original->close) {
+            vector<int> detour = detours->at(edge_in_original);
+            if (path.back() == detour.front()) {
+                path.insert(path.end(), detour.begin()+1, detour.end());
+            } else {
+                vector<int> detour_reverse(detour.rbegin(), detour.rend());
+                path.insert(path.end(), detour_reverse.begin()+1, detour_reverse.end());
+            }
+        } else {
+            path.push_back(start);
+        }
+    } 
 	return path;
 }
 
@@ -176,6 +198,7 @@ vector<int> cnn(Graphe G, vector<int> christo) {
     cout << endl;*/
 
     if (U.empty()) return P1;
+    U.insert(U.begin(), christo[0]);
 
     /*
     unordered_set<Edge*> Eb_set(Eb.begin(), Eb.end());
@@ -197,8 +220,8 @@ vector<int> cnn(Graphe G, vector<int> christo) {
         cout << links[0]->getName() << " <-> " << links[1]->getName() << endl;
     }*/
 
-    
-    Graphe G_prim = compress(/*&G_star,*/ U, G);
+    unordered_map<Edge*, vector<int> > detours;
+    Graphe G_prim = compress(/*&G_star,*/ U, G, &detours);
     //cout << "compress ok" << endl;
 /*
     cout << "G' (Noeuds de G non visités, arêtes dont on ne connaît pas la nature)" << endl;
@@ -211,8 +234,7 @@ vector<int> cnn(Graphe G, vector<int> christo) {
         cout << links[0]->getName() << " <-> " << links[1]->getName() << endl;
     }
 */
-    vector<int> P2 = nearestNeighbor(&G_prim);
-    /*
+    vector<int> P2 = nearestNeighbor(&G_prim, &G, &detours);
     cout << "P1 : ";
     for (int node : P1) {
         cout << node << " ";
