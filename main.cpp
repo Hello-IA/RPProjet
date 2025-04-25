@@ -299,7 +299,7 @@ int main() {
     double cout_opt = 0;
     double cout_cnn = 0;
     double cout_cr =0;
-    for(int i = 0; i< 2; i++){
+    for(int i = 0; i< 50; i++){
         cout<< "Tour : " << i << endl;
         g = initKCCTP(10, 8, 0, 50, i);
         //g.display("output.png");
@@ -334,13 +334,13 @@ int main() {
 
         //cout << "haha" <<endl;
         list_cnn.push_back(cout_cnn);
-        /*
+        
         vector<int> cycle_opt = findExactTSPSolutionFromTour(g, Christofides);
         cout_opt = pathCost(g, cycle_opt);
         cout << "Cycle OPT : ";
         for(int c : cycle_opt) 
         cout << c << " ";
-        cout << " cout de OPT " << cout_opt << endl;*/
+        cout << " cout de OPT " << cout_opt << endl;
 
 
 
