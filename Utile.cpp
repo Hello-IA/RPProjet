@@ -13,7 +13,6 @@ Graphe unionGraphes(Graphe t, vector<Edge*> edges){
 		g.addEdge(g.getNoeud(t.edges[i]->getLinks()[0]->getName()), g.getNoeud(t.edges[i]->getLinks()[1]->getName()), t.edges[i]->getValue());
 	}
 
-
 	for(Edge* e : edges){
 		int n1 = e->getLinks()[0]->getName();
 		int n2 = e->getLinks()[1]->getName();
@@ -128,7 +127,6 @@ struct CompareDist {
 };
 
 vector<int> shortestPathDijkstra(Graphe* g, Noeud* s, Noeud* t, double* sum) {
-	//cout << "enter dijkstra" << endl;
 	unordered_map<int, pair<double, int> > distances_pred;
 	for (Noeud* n : g->noeuds) {
 		pair<double, int> paire (HUGE_VALF, -1);
@@ -180,23 +178,20 @@ vector<int> shortestPathDijkstra(Graphe* g, Noeud* s, Noeud* t, double* sum) {
 		return {}; // Pas de chemin trouvé
 	}
 
-	//cout << "dijkstra ok jusqu'à la recup du path" << endl;
 	while(temp != s->getName()) {
 		path.insert(path.begin(), temp);
 		int next = distances_pred[temp].second;
 		Edge* e = g->getEdge(temp, next);
 		if (e == nullptr) {
 			cerr << "Erreur : arête manquante entre " << temp << " et " << next << endl;
-			exit(1);  // ou throw, ou continue, selon ton besoin
+			exit(1);
 		}
 		*sum += e->getValue();
 
-		//cout << "getEdge ok" << endl;
 		temp = next;
 	}
-	path.insert(path.begin(), temp);
 
-	//cout << "dijkstra ok, taille du path : " << path.size() << ", poids du path : " << *sum << endl;
+	path.insert(path.begin(), temp);
 	return path;
 }
 

@@ -323,7 +323,7 @@ int main() {
         //cout << "hih"<< endl;
 
         
-        p2 = cnn(g, Christofides);
+        p2 = compressAndExplore(g, Christofides);
         cout_cnn= pathCost(g, p2);
         cout << "CNN : ";
         for(int i : p2) 
