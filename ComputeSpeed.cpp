@@ -23,6 +23,8 @@ float std_dev(vector<float> v, float m) {
 }
 
 void compute_speed(bool include_christo) {
+    int invalid_cr = 0;
+    int invalid_cnn = 0;
     unordered_map<int, vector<float> > cr_times;
     unordered_map<int, vector<float> > cnn_times;
     unordered_map<int, float> means_cr;
@@ -48,12 +50,14 @@ void compute_speed(bool include_christo) {
             const clock_t begin_cr = clock();
             vector<int> p1 = cyclicRouting(g, christo);
             float time_cr = clock() - begin_cr;
+            if (!is_valid_cycle(g, p1)) invalid_cr++;
             if (include_christo) time_cr += time_christo;
             cr_times.at(size).push_back(time_cr);
 
             const clock_t begin_cnn = clock();
             vector<int> p2 = compressAndExplore(g, christo);
             float time_cnn = clock() - begin_cnn;
+            if (!is_valid_cycle(g, p2)) invalid_cnn++;
             if (include_christo) time_cnn += time_christo;
             cnn_times.at(size).push_back(time_cnn);
         }
@@ -68,4 +72,6 @@ void compute_speed(bool include_christo) {
         cout << "Écart-type : " << std_dev_cnn[size]/CLOCKS_PER_SEC << endl << endl;
     }
     cout << "computation in " << (clock() - begin_compute)/CLOCKS_PER_SEC << " seconds" << endl;
+    cout << "Nombre de cycles CR invalides : " << invalid_cr << endl;
+    cout << "Nombre de cycles CNN invalides : " << invalid_cnn << endl;
 }

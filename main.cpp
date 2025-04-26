@@ -18,7 +18,6 @@
 #include <iostream>
 #include <vector>
 #include <limits>
-
 #include <fstream>
 
 void compute_approx() {
@@ -32,6 +31,7 @@ void compute_approx() {
     double cout_opt = 0;
     double cout_cnn = 0;
     double cout_cr =0;
+    const clock_t begin_approx = clock();
     for(int i = 0; i< 50; i++){
         cout<< "Tour : " << i << endl;
         g = initKCCTP(10, 8, 0, 50, i);
@@ -102,6 +102,8 @@ void compute_approx() {
     // Fermeture du fichier
     fichierSortie.close();
     cout << "ici" << endl;
+
+    cout << "computation in " << (clock() - begin_approx)/CLOCKS_PER_SEC <<  " seconds" << endl;
 }
 
      
@@ -126,6 +128,8 @@ int main() {
         cout << n << " ";
     }
     cout << endl;
+    bool is_valid_cr = is_valid_cycle(g, ctp_cr);
+    cout << "CR " << ((is_valid_cr) ? "" : "pas ") << "ok" << endl;
 
     // CNN
     vector<int> ctp_cnn = compressAndExplore(g, tsp_cycle);
@@ -134,6 +138,8 @@ int main() {
         cout << n << " ";
     }
     cout << endl;
+    bool is_valid_cnn = is_valid_cycle(g, ctp_cnn);
+    cout << "CNN " << ((is_valid_cnn) ? "" : "pas ") << "ok" << endl;
 
     // OPT (commentez cette partie si vous testez de grandes instances)
     vector<int> ctp_opt = findExactTSPSolutionFromTour(g, tsp_cycle);
@@ -143,10 +149,10 @@ int main() {
     }
     cout << endl;
 
-    // Calcul des approximations (prend un certain temps)
+    // Calcul des approximations (prend un certain temps ~ 1h30)
     // compute_approx();
 
-    // Calcul des vitesses (prend un certain temps)
+    // Calcul des vitesses (prend un certain temps ~ 25 minutes)
     // compute_speed(false);
 
     return 0;
