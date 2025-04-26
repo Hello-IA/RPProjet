@@ -19,20 +19,20 @@ ecarts_types_cnn = np.array([0.000954628, 0.00632627, 0.0598401, 0.191839, 0.570
 # Création des subplots
 fig, ax = plt.subplots(figsize=(10, 6))
 
-fig.canvas.manager.set_window_title("cr_vs_cnn_avec_christofides")
+fig.canvas.manager.set_window_title("cr_vs_cnn")
 
-# Courbe CR + zone d'incertitude
+# Courbe CR + zone d'écart-type
 ax.plot(tailles, temps_cr, label='cr', marker='o')
 ax.fill_between(tailles, temps_cr - ecarts_types_cr, temps_cr + ecarts_types_cr, alpha=0.2)
 
-# Courbe CNN + zone d'incertitude
+# Courbe CNN + zone d'écart-type
 ax.plot(tailles, temps_cnn, label='cnn', marker='s')
 ax.fill_between(tailles, temps_cnn - ecarts_types_cnn, temps_cnn + ecarts_types_cnn, alpha=0.2)
 
 # Titre et légende
 ax.set_title("Temps d'exécution moyens avec écart-type")
 ax.set_xlabel("Taille du graphe")
-ax.set_ylabel("Temps (secondes)")
+ax.set_ylabel("Temps (en secondes)")
 ax.legend()
 ax.grid(True, linestyle='--', alpha=0.5)
 

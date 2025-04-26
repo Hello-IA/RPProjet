@@ -12,6 +12,6 @@
 #include<cmath>
 
 
-void compute_speed();
+void compute_speed(bool);
 
 #endif

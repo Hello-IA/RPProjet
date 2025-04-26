@@ -105,16 +105,12 @@ vector<int> christofides(Graphe g){
     return c;
 }
 
-double sumPath(Graphe* g, vector<int> path) {
-	cout << "enter sumPath" << endl;
+double sumPath(Graphe g, vector<int> path) {
 	double sum = 0;
 	for (size_t i = 0; i < path.size() - 1; i++) {
-		cout << i << endl;
-		Edge* e = g->getEdge(path[i], path[i+1]);
-		cout << "getEdge ok " << e->getValue() << endl;
+		Edge* e = g.getEdge(path[i], path[i+1]);
 		sum += e->getValue();
 	}
-	cout << "sumPath ok" << endl;
 	return sum;
 }
 

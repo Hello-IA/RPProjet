@@ -24,8 +24,8 @@ vector<int> removeDuplicates(vector<int> path);
 
 vector<int> christofides(Graphe g);
 
-// Somme des poids des arêtes d'un chemin (non utilisée)
-double sumPath(Graphe*, vector<int>);
+// Somme des poids des arêtes d'un chemin
+double sumPath(Graphe, vector<int>);
 
 // Variante de l'algorithme de PCC de Dijkstra qui n'emprunte pas les arêtes fermées
 vector<int> shortestPathDijkstra(Graphe*, Noeud* , Noeud*, double*);

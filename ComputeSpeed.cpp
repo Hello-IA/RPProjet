@@ -22,7 +22,7 @@ float std_dev(vector<float> v, float m) {
     return sqrt(sum/v.size());
 }
 
-void compute_speed() {
+void compute_speed(bool include_christo) {
     unordered_map<int, vector<float> > cr_times;
     unordered_map<int, vector<float> > cnn_times;
     unordered_map<int, float> means_cr;
@@ -41,18 +41,20 @@ void compute_speed() {
         for (int seed = 0; seed < 50; seed++) {
             Graphe g = initKCCTP(size, size-2, 5, 30, seed);
 
-            //const clock_t begin_christo = clock();
+            const clock_t begin_christo = clock();
             vector<int> christo = christofides(g);
-            //float time_christo = clock() - begin_christo;
+            float time_christo = clock() - begin_christo;
 
             const clock_t begin_cr = clock();
             vector<int> p1 = cyclicRouting(g, christo);
-            float time_cr = clock() - begin_cr;// + time_christo;
+            float time_cr = clock() - begin_cr;
+            if (include_christo) time_cr += time_christo;
             cr_times.at(size).push_back(time_cr);
 
             const clock_t begin_cnn = clock();
             vector<int> p2 = compressAndExplore(g, christo);
-            float time_cnn = clock() - begin_cnn;// + time_christo;
+            float time_cnn = clock() - begin_cnn;
+            if (include_christo) time_cnn += time_christo;
             cnn_times.at(size).push_back(time_cnn);
         }
         means_cr[size] = average(cr_times.at(size));
