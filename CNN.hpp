@@ -1,16 +1,17 @@
 #ifndef CNN_HPP
 #define CNN_HPP
 
-#include "Graphe.hpp"
-#include "Utile.hpp"
-
-#include <set>
-#include "Edge.hpp"
-#include "Noeud.hpp" 
 #include <vector>
 #include <iostream>
-#include<unordered_set>
+#include <set>
+#include <unordered_set>
 
-vector<int> cnn(Graphe, vector<int>);
+#include "Graphe.hpp"
+#include "Utile.hpp"
+#include "Edge.hpp"
+#include "Noeud.hpp" 
+
+// Fonction principale de l'algorithme CNN
+vector<int> compressAndExplore(Graphe, vector<int>);
 
 #endif

@@ -12,6 +12,7 @@
 #include <iostream>
 #include <graphviz/gvc.h>
 #include <graphviz/cgraph.h>
+#include "ComputeSpeed.hpp"
 
 
 #include <iostream>
@@ -60,7 +61,7 @@ int main() {
         //cout << "hih"<< endl;
 
         
-        p2 = cnn(g, Christofides);
+        p2 = compressAndExplore(g, Christofides);
         cout_cnn= pathCost(g, p2);
         cout << "CNN : ";
         for(int i : p2) 
@@ -125,6 +126,10 @@ int main() {
     // Fermeture du fichier
     fichierSortie.close();
     cout << "ici" << endl;
+
+
+    // Calcul des vitesses
+    compute_speed();
 
     return 0;
 }

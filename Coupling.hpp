@@ -7,18 +7,21 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
 #include <algorithm>
+#include <vector>
+#include <cstring>
+#include <string>
+#include <sstream>
+
 #include "Graphe.hpp"
 #include "Noeud.hpp"
 #include "Edge.hpp"
-
-#include <vector>
-#include <cstring>
 #include "blossom5/example.h"
-#include <string>
-#include <sstream>
+
+// Fonction de couplage utilisée pour comparaison
 vector<Edge*> coupling_glutton(Graphe*);
+
+// Fonction de couplage utilisée pour Christofides, utilise un algorithme extérieur (voir rapport)
 vector<Edge*> coupling_perfect(Graphe*);
 
 
