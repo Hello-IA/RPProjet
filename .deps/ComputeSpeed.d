@@ -1,6 +1,6 @@
-Coupling.o: \
- C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\Coupling.cpp \
- C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\Coupling.hpp \
+ComputeSpeed.o: \
+ C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\ComputeSpeed.cpp \
+ C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\ComputeSpeed.hpp \
  C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\Graphe.hpp \
  C:\Program\ Files\Graphviz\include/graphviz/gvc.h \
  C:\Program\ Files\Graphviz\include/graphviz/types.h \
@@ -15,6 +15,13 @@ Coupling.o: \
  C:\Program\ Files\Graphviz\include/graphviz/gvplugin.h \
  C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\Edge.hpp \
  C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\Noeud.hpp \
+ C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\RandomkCCTP.hpp \
+ C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\CyclicRouting.hpp \
+ C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\CNN.hpp \
+ C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\Utile.hpp \
+ C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\Prim.hpp \
+ C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\DegreeGrapheImpair.hpp \
+ C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\Coupling.hpp \
  C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\blossom5/example.h \
  C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\blossom5/PerfectMatching.h \
  C:\Users\simon\OneDrive\Bureau\ANDROIDE\S2\RP\ProjetRP\RPProjet\blossom5/block.h \

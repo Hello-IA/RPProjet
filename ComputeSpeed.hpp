@@ -8,7 +8,9 @@
 #include "CyclicRouting.hpp"
 #include "CNN.hpp"
 #include "Utile.hpp"
+#include <numeric>
 #include<cmath>
+
 
 void compute_speed();
 

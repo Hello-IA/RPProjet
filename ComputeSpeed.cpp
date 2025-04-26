@@ -6,7 +6,7 @@ float average(vector<float> v) {
     }
 
     auto const count = static_cast<float>(v.size());
-    return reduce(v.begin(), v.end()) / count;
+    return std::accumulate(v.begin(), v.end(), 0.0f) / count;
 }
 
 float std_dev(vector<float> v, float m) {
@@ -51,7 +51,7 @@ void compute_speed() {
             cr_times.at(size).push_back(time_cr);
 
             const clock_t begin_cnn = clock();
-            vector<int> p2 = cnn(g, christo);
+            vector<int> p2 = compressAndExplore(g, christo);
             float time_cnn = clock() - begin_cnn;// + time_christo;
             cnn_times.at(size).push_back(time_cnn);
         }
