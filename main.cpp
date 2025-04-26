@@ -11,6 +11,7 @@
 #include <iostream>
 #include <graphviz/gvc.h>
 #include <graphviz/cgraph.h>
+#include "ComputeSpeed.hpp"
 
 
 #include <iostream>
@@ -388,6 +389,10 @@ int main() {
     // Fermeture du fichier
     fichierSortie.close();
     cout << "ici" << endl;
+
+
+    // Calcul des vitesses
+    compute_speed();
 
     return 0;
 }
